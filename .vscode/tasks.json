@@ -1,8 +1,20 @@
 {
     "version": "2.0.0",
-    "tasks": [{
-        "label": "compile and run pde",
-        "type": "shell",
-        "command": "processing-java --sketch=\"${fileDirname}\" --run"
-    }]
+    "tasks": [
+        {
+            "label": "compile and run pde",
+            "type": "shell",
+            "command": "processing-java --sketch=\"${fileDirname}}\" --run"
+        },
+        {
+            "label": "export pde",
+            "type": "shell",
+            "command": "processing-java --sketch=\"${fileDirname}\" --output=\"C:\\Users\\dittl\\Documents\\Processing\\git\\output\\${fileBasenameNoExtension}\" --force --export",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
 }
