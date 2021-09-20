@@ -1,0 +1,8 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "compile and run pde",
+        "type": "shell",
+        "command": "processing-java --sketch=\"${fileDirname}\" --run"
+    }]
+}
