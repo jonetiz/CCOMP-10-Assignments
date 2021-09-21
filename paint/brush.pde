@@ -27,7 +27,7 @@ class Brush {
       break;
     case "paint":
       if (mouseY > 100) {
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size/2; i++) {
           stroke(rgba, 128-(128 * i/size));
           noFill();
           circle(mouseX, mouseY, i);
@@ -64,6 +64,14 @@ class Brush {
         cursor(ARROW);
       }
       break;
+    case "eyedropper":
+      if (mouseY > 100) {
+        noCursor();
+        image(eyedropper, mouseX-4, mouseY-28);
+      } else {
+        cursor(ARROW);
+      }
+      break;
     }
   }
 
@@ -78,7 +86,7 @@ class Brush {
       break;
     case "paint":
       buffer.beginDraw();
-      for (int i = 0; i < size; i++) {
+      for (int i = 0; i < size/2; i++) {
         buffer.stroke(rgba, 128-(128 * i/size));
         buffer.noFill();
         buffer.circle(mouseX, mouseY - 100, i);
@@ -107,6 +115,7 @@ class Brush {
       break;
     case "erase":
       buffer.beginDraw();
+      //Check inside bounding rectangle of an arbitrary distance (size) from the mouse position and replace pixels of the color clicked on.
       for (int x = mouseX - (size/2); x < mouseX + (size/2); x++) {
         for (int y = mouseY - (size/2); y < mouseY + (size/2); y++) {
           //Yoinked the calc from https://stackoverflow.com/questions/14487322/get-all-pixel-array-inside-circle
@@ -121,6 +130,9 @@ class Brush {
         }
       }
       buffer.endDraw();
+      break;
+    case "eyedropper":
+      rgba = buffer.get(mouseX-4, mouseY-28);
       break;
     }
   }

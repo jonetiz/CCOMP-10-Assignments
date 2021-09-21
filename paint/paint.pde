@@ -9,11 +9,13 @@
 //Import stuff
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.*;
 import java.awt.*;
+import java.lang.*;
 
-//Initialize the bucket and buffer images.
+//Initialize the bucket and eyedropper images.
 PImage bucket;
+PImage eyedropper;
 //Buffer used for saving and stuff.
 PGraphics buffer;
 //Background image
@@ -29,6 +31,7 @@ Component colorPicker;
 Component fcParent;
 JFileChooser fileChooser = new JFileChooser();
 
+
 //Initialize our brush object
 Brush brush = new Brush();
 
@@ -40,9 +43,18 @@ void setup() {
   surface.setTitle("Macrosoft Paint");
   bucket = loadImage("bucket.png");
   bucket.resize(32, 32);
+  eyedropper = loadImage("eyedropper.png");
+  eyedropper.resize(32, 32);
   
   buffer = createGraphics(width, height-100);
   
+  buffer.beginDraw();
+  noStroke();
+  fill(transparent);
+  buffer.rect(0,0,width,height);
+  buffer.clear();
+  buffer.endDraw();
+
   background = loadImage("transparency.png");
 }
 
@@ -100,9 +112,21 @@ void draw() {
   fill(0);
   text("Erase", 568, 40);
  
+  //Eyedropper button
+  fill(active("eyedropper"));
+  rect(600, 0, 64, 64);
   fill(0);
-  text("Current Brush", 408, 86);
-  
+  image(eyedropper, 616, 16);
+
+  fill(0);
+  text("Current Brush", 472, 86);
+
+  //Save button
+  fill(#ffffff);
+  rect(width-72, 0, 64, 64);
+  fill(0);
+  text("Save", width-40, 40);
+
   //Broken unfortunately
   //surface.setResizable(true);
 }
@@ -134,6 +158,19 @@ void mousePressed() {
   //If user clicks on erase selector
   if (mouseX >= 536 && mouseX < 600 && mouseY <= 64) {
     brush.type = "erase";
+  }
+  
+  //If user clicks on eyedropper selector
+  if (mouseX >= 600 && mouseX < 664 && mouseY <= 64) {
+    brush.type = "eyedropper";
+  }
+
+  //If user clicks on save button
+  if (mouseX >= width-72 && mouseX < width-8 && mouseY <= 64) {
+    int returnVal = fileChooser.showSaveDialog(fcParent);
+    if (returnVal == JFileChooser.APPROVE_OPTION) {
+      buffer.save(fileChooser.getSelectedFile().getAbsolutePath());
+    }
   }
 
   //If user clicks on canvas
