@@ -4,7 +4,7 @@
         {
             "label": "compile and run pde",
             "type": "shell",
-            "command": "processing-java --sketch=\"${fileDirname}}\" --run"
+            "command": "processing-java --sketch=\"${fileDirname}\" --run"
         },
         {
             "label": "export pde",
