@@ -16,31 +16,49 @@
 -
 */
 
+//Using an object to allow passing through functions.
+class ConfigParameter {
+    Object value;
+    ConfigParameter(Object v) {
+        value = v;
+    }
+}
+
 class Config {
     JSONObject json;
-    float musicVolume = 1.0;
-    float ambientVolume = 1.0;
-    float sfxVolume = 1.0;
+    ConfigParameter musicVolume = new ConfigParameter(1.0);
+    ConfigParameter ambientVolume = new ConfigParameter(1.0);
+    ConfigParameter sfxVolume = new ConfigParameter(1.0);
+
+    ConfigParameter keybind_jump = new ConfigParameter('w');
+    ConfigParameter keybind_left = new ConfigParameter('a');
+    ConfigParameter keybind_crouch = new ConfigParameter('s');
+    ConfigParameter keybind_right = new ConfigParameter('d');
+    ConfigParameter keybind_reload = new ConfigParameter('r');
+    ConfigParameter keybind_melee = new ConfigParameter('q');
 
     Config() {
         json = loadJSONObject("config.json");
         
         if (json != null) {
-            musicVolume = (json.hasKey("musicVolume")) ? json.getFloat("musicVolume") : musicVolume;
-            ambientVolume = (json.hasKey("ambientVolume")) ? json.getFloat("ambientVolume") : ambientVolume;
-            sfxVolume = (json.hasKey("sfxVolume")) ? json.getFloat("sfxVolume") : sfxVolume;
+            musicVolume.value = (json.hasKey("musicVolume")) ? json.getFloat("musicVolume") : musicVolume.value;
+            ambientVolume.value = (json.hasKey("ambientVolume")) ? json.getFloat("ambientVolume") : ambientVolume.value;
+            sfxVolume.value = (json.hasKey("sfxVolume")) ? json.getFloat("sfxVolume") : sfxVolume.value;
         } else {
             json = new JSONObject();
         }
 
         //Re-save in case we caught missing values
-        json.setFloat("musicVolume", musicVolume);
-        json.setFloat("ambientVolume", ambientVolume);
-        json.setFloat("sfxVolume", sfxVolume);
+        json.setFloat("musicVolume", (float)musicVolume.value);
+        json.setFloat("ambientVolume", (float)ambientVolume.value);
+        json.setFloat("sfxVolume", (float)sfxVolume.value);
         saveJSONObject(json, "config.json");
     }
 
     void update() {
-
+        json.setFloat("musicVolume", (float)musicVolume.value);
+        json.setFloat("ambientVolume", (float)ambientVolume.value);
+        json.setFloat("sfxVolume", (float)sfxVolume.value);
+        saveJSONObject(json, "config.json");
     }
 }

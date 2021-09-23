@@ -16,42 +16,54 @@
 -
 */
 
-//0 - main menu; 1 - survival mode; 2 - campaign; 3 - multiplayer
-int gameState = 0;
+//0 - main menu; 1 - campaign; 2 - endure; 3 - multiplayer
+int gameState;
 
 Config userConfig;
 MainMenu mainMenu;
 
 //Menu sounds
-Sound menuBeep;
-Sound menuError;
-Sound menuHover;
-Sound menuSelect1;
-Sound menuSelect2;
-Sound menuSelect3;
+SoundEffect menuBeep;
+SoundEffect menuError;
+SoundEffect menuHover;
+SoundEffect menuSelect1;
+SoundEffect menuSelect2;
+SoundEffect menuSelect3;
 
 void setup() {
-    size(displayWidth, displayHeight, P2D);
-    fullScreen();
+    fullScreen(P2D);
+    surface.setTitle("Halo: Siege of Arcadia");
+    
+    gameState = 0;
+    
     userConfig = new Config();
     mainMenu = new MainMenu();
-    menuFont1 = createFont("fonts\\HandelGothicRegular.ttf", 48);
+    menuFont1 = createFont("data\\fonts\\HandelGothicRegular.ttf", 48);
+    menuFont2 = createFont("data\\fonts\\HighwayGothicWide.ttf", 36);
+    standardFont = createFont("data\\fonts\\HighwayGothic.ttf", 24);
 
-    menuBeep = new Sound("sound\\menu\\beep.wav");
-    menuError = new Sound("sound\\menu\\error.wav");
-    menuHover = new Sound("sound\\menu\\hover.wav");
-    menuSelect1 = new Sound("sound\\menu\\select1.wav");
-    menuSelect2 = new Sound("sound\\menu\\select2.wav");
-    menuSelect3 = new Sound("sound\\menu\\select3.wav");
+    menuBeep = new SoundEffect("data\\sound\\menu\\beep.wav");
+    menuError = new SoundEffect("data\\sound\\menu\\error.wav");
+    menuHover = new SoundEffect("data\\sound\\menu\\hover.wav");
+    menuSelect1 = new SoundEffect("data\\sound\\menu\\select1.wav");
+    menuSelect2 = new SoundEffect("data\\sound\\menu\\select2.wav");
+    menuSelect3 = new SoundEffect("data\\sound\\menu\\select3.wav");
 }
 
 void draw() {
     switch (gameState) {
         case 0:
             mainMenu.update();
+            
         break;
         default:
             gameState = 0;
         break;
+    }
+}
+
+void keyPressed() {
+    if (key == ESC) {
+        key = 0;
     }
 }

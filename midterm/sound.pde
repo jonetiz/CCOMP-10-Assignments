@@ -17,19 +17,24 @@
 */
 
 import processing.sound.*;
+import java.util.*;
 
-class Music {
+/*
+interface Sound {
+    void play();
+    void stop();
+    void loop();
+    void changeVolume();
+} */
+
+class Sound {
     SoundFile file;
     String path;
-
-    Music (String p) {
-        path = sketchPath(p);
-        file = new SoundFile(midterm.this, path);
-        file.amp(userConfig.musicVolume);
-    }
+    ConfigParameter volumeParam;
 
     void play() {
         file.play();
+        file.amp((float)volumeParam.value);
     }
 
     void stop() {
@@ -38,20 +43,87 @@ class Music {
 
     void loop() {
         file.loop();
+        file.amp((float)volumeParam.value);
+    }
+
+    void changeVolume(float newVolume) {
+        file.amp(newVolume);
     }
 }
 
-class Sound {
-    SoundFile file;
-    String path;
-
-    Sound (String p) {
+class Music extends Sound {
+    Music (String p) {
         path = sketchPath(p);
         file = new SoundFile(midterm.this, path);
-        file.amp(userConfig.sfxVolume);
+        volumeParam = userConfig.musicVolume;
+    }
+}
+
+class Ambience extends Sound {
+    Ambience (String p) {
+        path = sketchPath(p);
+        file = new SoundFile(midterm.this, path);
+        volumeParam = userConfig.ambientVolume;
+    }
+}
+
+class SoundEffect extends Sound {
+    SoundEffect (String p) {
+        path = sketchPath(p);
+        file = new SoundFile(midterm.this, path);
+        volumeParam = userConfig.sfxVolume;
+    }
+}
+
+//Playlists probably only used in main menu, but we'll see; Intended behavior is to indefinitely loop until stopped with stop() method.
+class MusicPlaylist {
+    ArrayList<Music> songs = new ArrayList<Music>();
+    //Used for skipping/intended fading functionality.
+    Music nextSong;
+    Music currentSong;
+    MusicPlaylist(Music... args) {
+        for (Music song : args) {
+            songs.add(song);
+        }
+        Random rand = new Random();
+        currentSong = songs.get(rand.nextInt(songs.size()));
+        nextSong = songs.get(rand.nextInt(songs.size()));
+    }
+
+    void update() {
+        if (currentSong.file.isPlaying() == false) {
+            currentSong = nextSong;
+            Random rand = new Random();
+            nextSong = songs.get(rand.nextInt(songs.size()));
+            play();
+        }
+    }
+
+    void changeVolume(float newVolume) {
+        currentSong.changeVolume(newVolume);
     }
 
     void play() {
-        file.play();
+        currentSong.play();
+    }
+
+    void skip() {
+        currentSong.stop();
+        currentSong = nextSong;
+        Random rand = new Random();
+        nextSong = songs.get(rand.nextInt(songs.size()));
+        play();
+    }
+
+    void forceSong(Music song) {
+        currentSong.stop();
+        currentSong = song;
+        Random rand = new Random();
+        nextSong = songs.get(rand.nextInt(songs.size()));
+        play();
+    }
+
+    void forceNextSong(Music song) {
+        nextSong = song;
     }
 }

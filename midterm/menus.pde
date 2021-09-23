@@ -18,11 +18,13 @@
 */
 
 PFont menuFont1;
+PFont menuFont2;
+PFont standardFont;
 PImage menuLogo;
 
 class Menu {
     String title;
-    ArrayList<MenuButton> buttons;
+    ArrayList<MenuElement> elements;
     int ox, oy;
 
     void update() {}
@@ -42,8 +44,8 @@ class MenuWrapper {
 class MenuMain extends Menu {
     MenuMain() {
         title = "Main Menu";
-        buttons = new ArrayList<MenuButton>();
-        menuLogo = loadImage("img\\menu-temp.png");
+        elements = new ArrayList<MenuElement>();
+        menuLogo = loadImage("data\\img\\menu-temp.png");
         menuLogo.resize(512,128);
     }
     void update() {
@@ -56,8 +58,8 @@ class MenuMain extends Menu {
         textAlign(CENTER);
         textFont(menuFont1);
         text(title.toUpperCase(), width/2, height*0.4 + 50);
-        buttons.forEach((b) -> {
-            b.update();
+        elements.forEach((e) -> {
+            e.update();
         });
     }
 }
@@ -66,11 +68,11 @@ class MenuMain extends Menu {
 class MenuLarge extends Menu {
     MenuLarge(String t) {
         title = t;
-        buttons = new ArrayList<MenuButton>();
+        elements = new ArrayList<MenuElement>();
     }
     MenuLarge(String t, int ox, int oy) {
         title = t;
-        buttons = new ArrayList<MenuButton>();
+        elements = new ArrayList<MenuElement>();
         ox = ox;
         oy = oy;
     }
@@ -89,10 +91,10 @@ class MenuLarge extends Menu {
         vertex(width + 4, height - 200);
         vertex(-4, height - 200);
         endShape();
-        buttons.forEach((b) -> {
-            b.update();
-        });
         specialCase();
+        elements.forEach((e) -> {
+            e.update();
+        });
     }
     void specialCase() {
         println("Invalid MenuLarge detected.");
@@ -104,28 +106,42 @@ class SettingsMenu extends MenuLarge {
         super("Settings");
     }
     void specialCase() {
-        if (key == CODED) {
-            if (keyCode == ESC) {
-               mainMenu.mainMenuWrapper = new MenuWrapper(mainMenu.mainMenuMenu);
-            }
+        if (key == ESC) {
+            key = 0;
+            mainMenu.mainMenuWrapper = new MenuWrapper(mainMenu.mainMenuMenu);
         }
+
+        //Display setting stuff
+        fill(#2399ff);
+        textFont(menuFont2);
+        textAlign(LEFT);
+        text("MUSIC VOLUME", 100, 250);
+        text("AMBIENCE VOLUME", 100, 400);
+        text("SFX VOLUME", 100, 550);
     }
 }
 
-class MenuButton {
+class MenuElement {
     int x, y, w, h;
-    //Order for a structured/autopos menu
+    //Order for a structured/autopos menu; probably never gonna use, but just in case or something idno
     int order;
+
+    boolean mouseover;
+    int mouseovercount;
+    int mouseclickcount;
+
+    void update() {
+        
+    }
+}
+
+class MenuButton extends MenuElement {
     //Background true/false
     boolean background;
     String text;
 
-    private boolean mouseover;
-    private int mouseovercount;
-    private int mouseclickcount;
-
     MenuButton(Menu parent, int xbase, int ybase, int wid, int hei, String t, boolean bg) {
-        parent.buttons.add(this);
+        parent.elements.add(this);
         x = xbase;
         y = ybase;
         w = wid;
@@ -134,7 +150,7 @@ class MenuButton {
         background = bg;
     }
     MenuButton(Menu parent, int o, int wid, int hei, String t, boolean bg) {
-        parent.buttons.add(this);
+        parent.elements.add(this);
         order = o;
         w = wid;
         h = hei;
@@ -206,5 +222,58 @@ class ExitButton extends MenuButton {
     }
     void pressed() {
         exit();
+    }
+}
+
+//Slider for settings
+class MenuSlider extends MenuElement {
+    //Position of slider
+    float sliderPos;
+    ConfigParameter param;
+    
+    MenuSlider(Menu parent, int xbase, int ybase, int wid, ConfigParameter p) {
+        parent.elements.add(this);
+        x = xbase;
+        y = ybase;
+        w = wid;
+        sliderPos = (float)p.value;
+        param = p;
+    }
+
+    void update() {
+        float sliderX;
+        mouseover = (x + 24 <= mouseX && mouseX <= x + w - 24 && y - 16 <= mouseY && mouseY <= y + 16);
+
+        fill(#2399ff);
+        stroke(#2399ff);
+        line(x+20,y,x+w-20,y);
+        noStroke();
+        triangle(x,y,x+16,y-16,x+16,y+16);
+        triangle(x+w,y,x+w-16,y-16,x+w-16,y+16);
+
+        //Calculate slidey part of the slider's x-coordinate
+        sliderX = (x+20) + (w-48) * sliderPos;
+        if (mouseover) {
+            if (mousePressed) {
+                if (mouseclickcount == 0) menuHover.play();
+                mouseclickcount++;
+                sliderX = mouseX - 4;
+                updateConfig(sliderX);
+            } else { 
+                mouseclickcount = 0;
+            }
+            fill(255);
+        } else {
+            fill(#2399ff);
+        }
+
+        rect(sliderX,y-16*(sliderPos+0.25),8,32*(sliderPos+0.25));
+    }
+
+    void updateConfig(float sliderX) {
+        var newValue = (sliderX-(x+20))/(w-48);
+        sliderPos = newValue;
+        param.value = newValue;
+        userConfig.update();
     }
 }

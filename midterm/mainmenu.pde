@@ -18,7 +18,10 @@
 
 class MainMenu {
     Background bg;
-    Music menuMusic = new Music("sound\\mainmenu.wav");
+    MusicPlaylist menuMusic = new MusicPlaylist(
+        new Music("data\\sound\\music\\halowars.wav"),
+        new Music("data\\sound\\music\\combatevolved.wav")
+    );
     
     MenuMain mainMenuMenu = new MenuMain();
     MenuButton campaignButton = new MenuButton(mainMenuMenu, width/2, height/2, 300, 50, "Campaign", true);
@@ -28,15 +31,25 @@ class MainMenu {
     ExitButton exitButton = new ExitButton(mainMenuMenu, width/2, height/2 + 300, 300, 50, "Exit", true);
 
     SettingsMenu settingsMenu = new SettingsMenu();
+    MenuSlider musicSlider = new MenuSlider(settingsMenu, 100, 300, 400, userConfig.musicVolume);
+    MenuSlider ambientSlider = new MenuSlider(settingsMenu, 100, 450, 400, userConfig.ambientVolume);
+    MenuSlider sfxSlider = new MenuSlider(settingsMenu, 100, 600, 400, userConfig.sfxVolume);
     
     MenuWrapper mainMenuWrapper = new MenuWrapper(mainMenuMenu);
 
     MainMenu() {
         bg = new Background(color(0), "star", 1, 180, 2, 8);
-        menuMusic.loop();
+        menuMusic.play();
     }
     void update() {
+        menuMusic.changeVolume((float)userConfig.musicVolume.value);
+        menuMusic.update();
         bg.update();
         mainMenuWrapper.update();
+
+        fill(#2399ff);
+        textAlign(RIGHT);
+        textFont(standardFont);
+        text("A Game by Jonathan Etiz; Version 0.0.1", width-16,height-24);
     }
 }
