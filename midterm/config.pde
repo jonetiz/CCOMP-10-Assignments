@@ -37,6 +37,8 @@ class Config {
     ConfigParameter keybind_reload = new ConfigParameter('r');
     ConfigParameter keybind_melee = new ConfigParameter('q');
 
+    ConfigParameter debug = new ConfigParameter(true);
+
     Config() {
         json = loadJSONObject("config.json");
         

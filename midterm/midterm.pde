@@ -17,10 +17,14 @@
 */
 
 //0 - main menu; 1 - campaign; 2 - endure; 3 - multiplayer
-int gameState;
-
 Config userConfig;
+
+//GameStates; whatever is currently set as the variable gameState will be displayed, any other objects GameState will be kept in memory until deconstructed.
+GameState gameState;
 MainMenu mainMenu;
+
+//Currently loaded characters, used for targeting/aggro iteration.
+ArrayList<Character> loadedCharacters = new ArrayList<Character>();
 
 //Menu sounds
 SoundEffect menuBeep;
@@ -30,14 +34,17 @@ SoundEffect menuSelect1;
 SoundEffect menuSelect2;
 SoundEffect menuSelect3;
 
+interface GameState {
+    void update();
+}
+
 void setup() {
     fullScreen(P2D);
     surface.setTitle("Halo: Siege of Arcadia");
     
-    gameState = 0;
-    
     userConfig = new Config();
     mainMenu = new MainMenu();
+    gameState = mainMenu;
     menuFont1 = createFont("data\\fonts\\HandelGothicRegular.ttf", 48);
     menuFont2 = createFont("data\\fonts\\HighwayGothicWide.ttf", 36);
     standardFont = createFont("data\\fonts\\HighwayGothic.ttf", 24);
@@ -51,15 +58,7 @@ void setup() {
 }
 
 void draw() {
-    switch (gameState) {
-        case 0:
-            mainMenu.update();
-            
-        break;
-        default:
-            gameState = 0;
-        break;
-    }
+    gameState.update();
 }
 
 void keyPressed() {

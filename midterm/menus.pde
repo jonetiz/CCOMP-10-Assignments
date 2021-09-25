@@ -22,6 +22,10 @@ PFont menuFont2;
 PFont standardFont;
 PImage menuLogo;
 
+interface ButtonCallback {
+    void call();
+}
+
 class Menu {
     String title;
     ArrayList<MenuElement> elements;
@@ -101,6 +105,34 @@ class MenuLarge extends Menu {
     }
 }
 
+class MenuCampaign extends Menu {
+    MenuCampaign() {
+        title = "Campaign";
+        elements = new ArrayList<MenuElement>();
+        menuLogo = loadImage("data\\img\\menu-temp.png");
+        menuLogo.resize(512,128);
+    }
+    void update() {
+        if (key == ESC) {
+            key = 0;
+            mainMenu.mainMenuWrapper = new MenuWrapper(mainMenu.mainMenuMenu);
+        }
+
+        imageMode(CENTER);
+        image(menuLogo,width/2,height*0.3);
+        strokeWeight(4);
+        stroke(#2399ff);
+        line(width/2-width/6, height*0.4, width/2+width/6, height*0.4);
+        fill(#2399ff);
+        textAlign(CENTER);
+        textFont(menuFont1);
+        text(title.toUpperCase(), width/2, height*0.4 + 50);
+        elements.forEach((e) -> {
+            e.update();
+        });
+    }
+}
+
 class SettingsMenu extends MenuLarge {
     SettingsMenu() {
         super("Settings");
@@ -140,7 +172,10 @@ class MenuButton extends MenuElement {
     boolean background;
     String text;
 
-    MenuButton(Menu parent, int xbase, int ybase, int wid, int hei, String t, boolean bg) {
+    ButtonCallback callback;
+
+
+    MenuButton(Menu parent, int xbase, int ybase, int wid, int hei, String t, boolean bg, ButtonCallback cb) {
         parent.elements.add(this);
         x = xbase;
         y = ybase;
@@ -148,6 +183,7 @@ class MenuButton extends MenuElement {
         h = hei;
         text = t;
         background = bg;
+        callback = cb;
     }
     MenuButton(Menu parent, int o, int wid, int hei, String t, boolean bg) {
         parent.elements.add(this);
@@ -187,7 +223,9 @@ class MenuButton extends MenuElement {
         if (mouseover && mousePressed) {
             if (mouseclickcount == 0) {
                 menuSelect3.play();
-                pressed();
+                callback.call();
+                //Make sure it doesn't press any buttons that "appear" under
+                mousePressed = false;
             }
             mouseclickcount++;
         } else {
@@ -195,33 +233,6 @@ class MenuButton extends MenuElement {
         }
         textSize(32);
         text(text.toUpperCase(), x, y + 10);
-    }
-    void pressed() {
-        println("Button pressed without action assignment");
-    };
-}
-
-class SettingsButton extends MenuButton {
-    SettingsButton(Menu parent, int xbase, int ybase, int wid, int hei, String t, boolean bg) {
-        super(parent, xbase, ybase, wid, hei, t, bg);
-    }
-    SettingsButton(Menu parent, int o, int wid, int hei, String t, boolean bg) {
-        super(parent, o, wid, hei, t, bg);
-    }
-    void pressed() {
-        mainMenu.mainMenuWrapper = new MenuWrapper(mainMenu.settingsMenu);
-    }
-}
-
-class ExitButton extends MenuButton {
-    ExitButton(Menu parent, int xbase, int ybase, int wid, int hei, String t, boolean bg) {
-        super(parent, xbase, ybase, wid, hei, t, bg);
-    }
-    ExitButton(Menu parent, int o, int wid, int hei, String t, boolean bg) {
-        super(parent, o, wid, hei, t, bg);
-    }
-    void pressed() {
-        exit();
     }
 }
 

@@ -16,7 +16,12 @@
 -
 */
 
-class MainMenu {
+class MainMenu implements GameState {
+    PImage planetArcadia;
+
+    ShipHalcyon shipUnsc1 = new ShipHalcyon(1500, 200, 1.0, 1.0, 180, 1);
+    ShipHalcyon shipUnsc2 = new ShipHalcyon(1800, 300, 0.8, 0.8, 180, 2);
+
     Background bg;
     MusicPlaylist menuMusic = new MusicPlaylist(
         new Music("data\\sound\\music\\halowars.wav"),
@@ -24,32 +29,85 @@ class MainMenu {
     );
     
     MenuMain mainMenuMenu = new MenuMain();
-    MenuButton campaignButton = new MenuButton(mainMenuMenu, width/2, height/2, 300, 50, "Campaign", true);
-    MenuButton endureButton = new MenuButton(mainMenuMenu, width/2, height/2 + 75, 300, 50, "Endure", true);
-    MenuButton multiplayerButton = new MenuButton(mainMenuMenu, width/2, height/2 + 150, 300, 50, "Multiplayer", true);
-    SettingsButton settingsButton = new SettingsButton(mainMenuMenu, width/2, height/2 + 225, 300, 50, "Settings", true);
-    ExitButton exitButton = new ExitButton(mainMenuMenu, width/2, height/2 + 300, 300, 50, "Exit", true);
+    MenuButton campaignButton = new MenuButton(mainMenuMenu, width/2, height/2, 300, 50, "Campaign", false,
+        new ButtonCallback() {
+            void call() { mainMenuWrapper = new MenuWrapper(campaignMenu); }
+        }
+    );
+    MenuButton endureButton = new MenuButton(mainMenuMenu, width/2, height/2 + 75, 300, 50, "Endure", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton multiplayerButton = new MenuButton(mainMenuMenu, width/2, height/2 + 150, 300, 50, "Multiplayer", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton settingsButton = new MenuButton(mainMenuMenu, width/2, height/2 + 225, 300, 50, "Settings", false,
+        new ButtonCallback() {
+            void call() { mainMenuWrapper = new MenuWrapper(settingsMenu); }
+        }
+    );
+    MenuButton exitButton = new MenuButton(mainMenuMenu, width/2, height/2 + 300, 300, 50, "Exit", false,
+        new ButtonCallback() {
+            void call() { exit(); }
+        }
+    );
+
+    MenuCampaign campaignMenu = new MenuCampaign();
+    MenuButton continueButton = new MenuButton(campaignMenu, width/2, height/2, 300, 50, "Continue", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton newGameButton = new MenuButton(campaignMenu, width/2, height/2 + 75, 300, 50, "New Game", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton loadGameButton = new MenuButton(campaignMenu, width/2, height/2 + 150, 300, 50, "Load Game", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton campaignBackButton = new MenuButton(campaignMenu, width/2, height/2 + 225, 300, 50, "Back", false,
+        new ButtonCallback() {
+            void call() { mainMenuWrapper = new MenuWrapper(mainMenuMenu); }
+        }
+    );
 
     SettingsMenu settingsMenu = new SettingsMenu();
     MenuSlider musicSlider = new MenuSlider(settingsMenu, 100, 300, 400, userConfig.musicVolume);
     MenuSlider ambientSlider = new MenuSlider(settingsMenu, 100, 450, 400, userConfig.ambientVolume);
     MenuSlider sfxSlider = new MenuSlider(settingsMenu, 100, 600, 400, userConfig.sfxVolume);
+    MenuButton settingsBackButton = new MenuButton(settingsMenu, width-200, height-150, 100, 50, "Back", true,
+        new ButtonCallback() {
+            void call() { mainMenuWrapper = new MenuWrapper(mainMenuMenu); }
+        }
+    );
     
     MenuWrapper mainMenuWrapper = new MenuWrapper(mainMenuMenu);
 
     MainMenu() {
-        bg = new Background(color(0), "star", 1, 180, 2, 8);
+        bg = new Background(color(0), "star", 0.1, 180, 2, 8);
         menuMusic.play();
     }
     void update() {
         menuMusic.changeVolume((float)userConfig.musicVolume.value);
         menuMusic.update();
         bg.update();
+
+        loadedCharacters.forEach((c) -> {
+            c.update();
+            c.aggro();
+        });
+
         mainMenuWrapper.update();
 
         fill(#2399ff);
         textAlign(RIGHT);
         textFont(standardFont);
-        text("A Game by Jonathan Etiz; Version 0.0.1", width-16,height-24);
+        text("A game by Jonathan Etiz", width-16,height-24);
     }
 }

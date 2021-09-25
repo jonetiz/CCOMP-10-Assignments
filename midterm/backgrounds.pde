@@ -23,8 +23,8 @@ class BackgroundDetail {
     int size;
 
     //Position
-    int x;
-    int y;
+    float x;
+    float y;
     BackgroundDetail(String t, int min, int max, int xpos, int ypos) {
         type = t;
         size = int(random(min, max));
@@ -64,9 +64,9 @@ class Background {
     int bgX = 0;
 
     //How fast the background will "naturally" move
-    int speed;
+    float speed;
 
-    Background(color c, String t, int s, int d, int min, int max) {
+    Background(color c, String t, float s, int d, int min, int max) {
         //c = bgcolor, t = backgrounddetail type, d = density (count actually, how many are generated per "screen" w*h); min/max passed to backgrounddetail
         background = createImage(width * 4, height, RGB);
         for(int i = 0; i < background.pixels.length; i++) {
