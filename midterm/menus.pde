@@ -208,6 +208,7 @@ class MenuButton extends MenuElement {
                 stroke(#1e608f, 200);
             }
             fill(#051f43, 200);
+            rectMode(CORNER);
             rect(x-w/2, y-h/2, w, h, 5);
         }
         textAlign(CENTER);
@@ -277,7 +278,8 @@ class MenuSlider extends MenuElement {
         } else {
             fill(#2399ff);
         }
-
+        
+        rectMode(CORNER);
         rect(sliderX,y-16*(sliderPos+0.25),8,32*(sliderPos+0.25));
     }
 
