@@ -39,16 +39,22 @@ interface GameState {
 }
 
 void setup() {
+    //Fullscreen things
     fullScreen(P2D);
+    //Set window title
     surface.setTitle("Halo: Siege of Arcadia");
     
+    //Initialize configs and gamestates
     userConfig = new Config();
     mainMenu = new MainMenu();
     gameState = mainMenu;
+    
+    //Initialize global resources
     menuFont1 = createFont("data\\fonts\\HandelGothicRegular.ttf", 48);
     menuFont2 = createFont("data\\fonts\\HighwayGothicWide.ttf", 36);
     standardFont = createFont("data\\fonts\\HighwayGothic.ttf", 24);
-
+    
+    //SFX
     menuBeep = new SoundEffect("data\\sound\\menu\\beep.wav");
     menuError = new SoundEffect("data\\sound\\menu\\error.wav");
     menuHover = new SoundEffect("data\\sound\\menu\\hover.wav");
@@ -58,10 +64,12 @@ void setup() {
 }
 
 void draw() {
+    //Draw will be handled inside each individual gamestate
     gameState.update();
 }
 
 void keyPressed() {
+    //Override escape key to disable exiting game when pressed. Will be used for back in menus/exiting menus.
     if (key == ESC) {
         key = 0;
     }

@@ -21,6 +21,7 @@ class MainMenu implements GameState {
 
     ShipHalcyon shipUnsc1 = new ShipHalcyon(1500, 200, 1.0, 1.0, 180, 1);
     ShipHalcyon shipUnsc2 = new ShipHalcyon(1800, 300, 0.8, 0.8, 180, 2);
+    CovenantSupercarrier covieShip = new CovenantSupercarrier(0, 400, 1.0, 1.0, 0, 1);
 
     Background bg;
     MusicPlaylist menuMusic = new MusicPlaylist(
@@ -100,7 +101,6 @@ class MainMenu implements GameState {
 
         loadedCharacters.forEach((c) -> {
             c.update();
-            c.aggro();
         });
 
         mainMenuWrapper.update();

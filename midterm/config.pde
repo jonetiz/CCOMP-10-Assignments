@@ -26,6 +26,7 @@ class ConfigParameter {
 
 class Config {
     JSONObject json;
+    //Initialize config parameters with default values.
     ConfigParameter musicVolume = new ConfigParameter(1.0);
     ConfigParameter ambientVolume = new ConfigParameter(1.0);
     ConfigParameter sfxVolume = new ConfigParameter(1.0);
@@ -46,6 +47,7 @@ class Config {
             musicVolume.value = (json.hasKey("musicVolume")) ? json.getFloat("musicVolume") : musicVolume.value;
             ambientVolume.value = (json.hasKey("ambientVolume")) ? json.getFloat("ambientVolume") : ambientVolume.value;
             sfxVolume.value = (json.hasKey("sfxVolume")) ? json.getFloat("sfxVolume") : sfxVolume.value;
+            debug.value = (json.hasKey("debug")) ? json.getBoolean("debug") : debug.value;
         } else {
             json = new JSONObject();
         }
@@ -54,6 +56,7 @@ class Config {
         json.setFloat("musicVolume", (float)musicVolume.value);
         json.setFloat("ambientVolume", (float)ambientVolume.value);
         json.setFloat("sfxVolume", (float)sfxVolume.value);
+        json.setBoolean("debug", (boolean)debug.value);
         saveJSONObject(json, "config.json");
     }
 
@@ -61,6 +64,7 @@ class Config {
         json.setFloat("musicVolume", (float)musicVolume.value);
         json.setFloat("ambientVolume", (float)ambientVolume.value);
         json.setFloat("sfxVolume", (float)sfxVolume.value);
+        json.setBoolean("debug", (boolean)debug.value);
         saveJSONObject(json, "config.json");
     }
 }

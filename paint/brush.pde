@@ -67,7 +67,7 @@ class Brush {
     case "eyedropper":
       if (mouseY > 100) {
         noCursor();
-        image(eyedropper, mouseX-4, mouseY-28);
+        cursor(eyedropper, mouseX-4, mouseY-28);
       } else {
         cursor(ARROW);
       }

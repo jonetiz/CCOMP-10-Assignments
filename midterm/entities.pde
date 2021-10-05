@@ -26,8 +26,8 @@ interface ICharacter {
     void movement(int dir, float mag);
     //Death function
     void death();
-    //Controls targeting enemies
-    void aggro();
+    //Controls spotting and targeting enemies
+    void spotting();
 }
 
 interface IWeapon {
@@ -126,8 +126,58 @@ class Character extends Entity implements ICharacter {
     
     void death(){}
 
-    void aggro() {
-        
+    //Ty joe :D
+    private boolean checkVisibility(Character other) {
+        float rectCenterX = other.pos.x;
+        float rectCenterY = other.pos.y;
+        float rectW = other.w;
+        float rectH = other.h;
+        float cx = this.pos.x;
+        float cy = this.pos.y;
+        float r = this.fovDistance;
+
+        float rx = rectCenterX - rectW/2;
+        float ry = rectCenterY - rectH/2;
+
+        //top & bottom
+        if(abs(cx-rectCenterX)<=rectW/2 && abs(cy-rectCenterY)<=rectH/2 + r){
+            return true;
+        }
+        //left & right
+        if(abs(cy-rectCenterY)<=rectH/2 && abs(cx-rectCenterX)<=rectW/2 +r){
+            return true;
+        }
+        //corners
+        if(dist(rx,ry,cx,cy)<=r || dist(rx+rectW,ry,cx,cy)<=r || dist(rx,ry+rectH,cx,cy)<=r || dist(rx+rectW,ry+rectH,cx,cy)<=r){
+            return true; 
+        }
+        //TODO: Handle backward FOV fov cone
+        return false;
+    }
+
+    void spotting() {
+        loadedCharacters.forEach((c) -> {
+            //If character isn't on the same layer, ignore it. If character is on the same side, ignore it.
+            if (c.layer != this.layer || c.side == this.side) return;
+            if (c != this) {
+                //Check if the character is visible after passing all preliminary checks to this point.
+                if (checkVisibility(c)) {
+                    currentTarget = c;
+                }
+            }
+        });
+        ai();
+    }
+
+    void ai() {
+        if (currentTarget != null) {
+            //If thing 1 is in line of sight of thing 2
+            if (!(abs(atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) - rotation) % TWO_PI < 0.1 )) {
+                rotation -= 1/frameRate;
+
+            }
+            println(abs(atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) - rotation));
+        }
     }
 }
 
