@@ -31,10 +31,12 @@ class ShipHalcyon extends Character {
         curHP = maxHP;
         maxShield = 0;
         curShield = maxShield;
+        rotationSpeed = 12;
+        movementSpeed = 50;
         fov = 330;
         fovDistance = 3000;
         side = 1;
-        weaponPrimary = new SpaceMacGun();
+        weaponPrimary = new SpaceMacGun(l);
         weaponOffset.set(w/2,0);
         sprite = loadImage("data\\img\\char\\space\\unsc-halcyon.png");
         spriteFlipped = loadImage("data\\img\\char\\space\\unsc-halcyon-f.png");
@@ -78,10 +80,11 @@ class ShipHalcyon extends Character {
 }
 
 class SpaceMacGun extends Weapon {
-    SpaceMacGun() {
+    SpaceMacGun(int l) {
         rof = 15;
         lastShot = int(15*frameRate*60);
         inaccuracy = 0.01;
+        layer = l;
     }
     void update() {
         projectileOrigin = pos;
@@ -97,7 +100,7 @@ class SpaceMacGun extends Weapon {
     }
     void fire() {
         if (lastShot >= (60 * frameRate)/rof) {
-            Projectile proj = new MacRound(projectileOrigin, rotation + random(-inaccuracy, inaccuracy), scaleX, scaleY);
+            Projectile proj = new MacRound(projectileOrigin, rotation + random(-inaccuracy, inaccuracy), scaleX, scaleY, layer);
             ownedProjectiles.add(proj);
             lastShot = 0;
         }
@@ -105,12 +108,13 @@ class SpaceMacGun extends Weapon {
 }
 
 class MacRound extends Projectile {
-    MacRound(PVector position, float rot, float sX, float sY) {
+    MacRound(PVector position, float rot, float sX, float sY, int l) {
         pos = position;
         origin.set(position.x, position.y);
         rotation = rot;
         scaleX = sX;
         scaleY = sY;
+        layer = l;
 
         damageUpper = 10000;
         damageLower = 1000;
@@ -119,9 +123,8 @@ class MacRound extends Projectile {
         sprite = loadImage("data\\img\\proj\\space\\unsc-projectile-large.png");
     }
 
-    void hit(Entity otherObject) {
-        otherObject.curHP =- (int)random(damageLower, damageUpper);
-        expire();
+    void hit() {
+        
     }
 
     void expire() {
@@ -143,15 +146,17 @@ class CovenantSupercarrier extends Character {
         curHP = maxHP;
         maxShield = 50000;
         curShield = maxShield;
+        rotationSpeed = 6;
+        movementSpeed = 25;
         fov = 350;
         fovDistance = 3000;
         side = 2;
-        weaponPrimary = new CovenantCannonLarge();
+        weaponPrimary = new CovenantCannonLarge(l);
         weaponOffset.set(w/2,0);
         sprite = loadImage("data\\img\\char\\space\\cov-super.png");
         spriteFlipped = loadImage("data\\img\\char\\space\\cov-super-f.png");
     }
-    void update() { 
+    void update() {
         rect(pos.x, pos.y, 16,16);
         pushMatrix();
         translate(pos.x, pos.y);
@@ -185,15 +190,16 @@ class CovenantSupercarrier extends Character {
         weaponPrimary.scaleY = scaleY;
 
         weaponPrimary.update();
-        //spotting();
+        spotting();
     }
 }
 
 class CovenantCannonLarge extends Weapon {
-    CovenantCannonLarge() {
+    CovenantCannonLarge(int l) {
         rof = 15;
         lastShot = int(15*frameRate*60);
         inaccuracy = 0.01;
+        layer = l;
     }
     void update() {
         projectileOrigin = pos;
@@ -209,7 +215,7 @@ class CovenantCannonLarge extends Weapon {
     }
     void fire() {
         if (lastShot >= (60 * frameRate)/rof) {
-            Projectile proj = new CovenantLargePlasmaBall(projectileOrigin, rotation + random(-inaccuracy, inaccuracy), scaleX, scaleY);
+            Projectile proj = new CovenantLargePlasmaBall(projectileOrigin, rotation + random(-inaccuracy, inaccuracy), scaleX, scaleY, layer);
             ownedProjectiles.add(proj);
             lastShot = 0;
         }
@@ -217,12 +223,13 @@ class CovenantCannonLarge extends Weapon {
 }
 
 class CovenantLargePlasmaBall extends Projectile {
-    CovenantLargePlasmaBall(PVector position, float rot, float sX, float sY) {
+    CovenantLargePlasmaBall(PVector position, float rot, float sX, float sY, int l) {
         pos = position;
         origin.set(position.x, position.y);
         rotation = rot;
         scaleX = sX;
         scaleY = sY;
+        layer = l;
 
         damageUpper = 10000;
         damageLower = 1000;
@@ -231,9 +238,8 @@ class CovenantLargePlasmaBall extends Projectile {
         sprite = loadImage("data\\img\\proj\\space\\cov-projectile.png");
     }
 
-    void hit(Entity otherObject) {
-        otherObject.curHP =- (int)random(damageLower, damageUpper);
-        expire();
+    void hit() {
+        
     }
 
     void expire() {

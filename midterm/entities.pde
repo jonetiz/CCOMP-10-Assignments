@@ -72,6 +72,35 @@ class Entity implements IEntity {
     //Which "layer" is the entity on (used to differentiate any background/foreground elements); 0 - foreground, 1 or higher - background
     int layer;
 
+    //Ty joe :D
+    boolean checkInCircle(Entity other, float radius) {
+        float rectCenterX = other.pos.x;
+        float rectCenterY = other.pos.y;
+        float rectW = other.w;
+        float rectH = other.h;
+        float cx = this.pos.x;
+        float cy = this.pos.y;
+        float r = radius;
+
+        float rx = rectCenterX - rectW/2;
+        float ry = rectCenterY - rectH/2;
+
+        //top & bottom
+        if(abs(cx-rectCenterX)<=rectW/2 && abs(cy-rectCenterY)<=rectH/2 + r){
+            return true;
+        }
+        //left & right
+        if(abs(cy-rectCenterY)<=rectH/2 && abs(cx-rectCenterX)<=rectW/2 +r){
+            return true;
+        }
+        //corners
+        if(dist(rx,ry,cx,cy)<=r || dist(rx+rectW,ry,cx,cy)<=r || dist(rx,ry+rectH,cx,cy)<=r || dist(rx+rectW,ry+rectH,cx,cy)<=r){
+            return true; 
+        }
+        //TODO: Handle backward FOV fov cone
+        return false;
+    }
+
     void update() {}
 }
 
@@ -80,8 +109,10 @@ class Character extends Entity implements ICharacter {
     int curShield;
 
     Character currentTarget;
-    //Rotation speed of the enemy.
+    //Rotation speed of the character (degrees per second)
     int rotationSpeed;
+    //Movement speed of character (pixels per second)
+    int movementSpeed;
 
     //FOV things for AI spotting
     int fov;
@@ -126,42 +157,89 @@ class Character extends Entity implements ICharacter {
     
     void death(){}
 
-    //Ty joe :D
-    private boolean checkVisibility(Character other) {
-        float rectCenterX = other.pos.x;
-        float rectCenterY = other.pos.y;
-        float rectW = other.w;
-        float rectH = other.h;
-        float cx = this.pos.x;
-        float cy = this.pos.y;
-        float r = this.fovDistance;
+    //Adapted from "Tricks of the Windows Game Programming Gurus" Line Intersections
+    private Object[] isAimingAt(Character other) {
+        //Returns an object of (boolean, PVector(intersectionX, intersectionY))
+        Object[] rtrn = new Object[2];
 
-        float rx = rectCenterX - rectW/2;
-        float ry = rectCenterY - rectH/2;
+        //p0 and p1 represent the LoS.
+        PVector p0 = weaponPrimary.pos;
+        PVector p1 = new PVector(fovDistance*cos(rotation) + pos.x, fovDistance*sin(rotation) + pos.y);
+        //a = top
+        PVector a0 = new PVector(other.pos.x - other.w/2, other.pos.y - other.h/2);
+        PVector a1 = new PVector(other.pos.x + other.w/2, other.pos.y - other.h/2);
+        //b = left
+        PVector b0 = new PVector(other.pos.x - other.w/2, other.pos.y - other.h/2);
+        PVector b1 = new PVector(other.pos.x - other.w/2, other.pos.y + other.h/2);
+        //c = bottom
+        PVector c0 = new PVector(other.pos.x - other.w/2, other.pos.y + other.h/2);
+        PVector c1 = new PVector(other.pos.x + other.w/2, other.pos.y + other.h/2);
+        //d = right
+        PVector d0 = new PVector(other.pos.x + other.w/2, other.pos.y - other.h/2);
+        PVector d1 = new PVector(other.pos.x + other.w/2, other.pos.y + other.h/2);
 
-        //top & bottom
-        if(abs(cx-rectCenterX)<=rectW/2 && abs(cy-rectCenterY)<=rectH/2 + r){
-            return true;
+        PVector p2 = new PVector(p1.x - p0.x, p1.y - p0.y);
+        PVector a2 = new PVector(a1.x - a0.x, a1.y - a0.y);
+        PVector b2 = new PVector(b1.x - b0.x, b1.y - b0.y);
+        PVector c2 = new PVector(c1.x - c0.x, c1.y - c0.y);
+        PVector d2 = new PVector(d1.x - d0.x, d1.y - d0.y);
+        //s1 = p2, s2 = a/b/c/d2
+        //p2 = a/b/c/d0
+        //p3 = a/b/c/d1
+        float as, bs, cs, ds, at, bt, ct, dt;
+        //s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+        //t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+        as = (-p2.y * (p0.x - a0.x) + p2.x * (p0.y - a0.y)) / (-a2.x * p2.y + p2.x * a2.y);
+        at = ( a2.x * (p0.y - a0.y) - a2.y * (p0.x - a0.x)) / (-a2.x * p2.y + p2.x * a2.y);
+        bs = (-p2.y * (p0.x - b0.x) + p2.x * (p0.y - b0.y)) / (-b2.x * p2.y + p2.x * b2.y);
+        bt = ( b2.x * (p0.y - b0.y) - b2.y * (p0.x - b0.x)) / (-b2.x * p2.y + p2.x * b2.y);
+        cs = (-p2.y * (p0.x - c0.x) + p2.x * (p0.y - c0.y)) / (-c2.x * p2.y + p2.x * c2.y);
+        ct = ( c2.x * (p0.y - c0.y) - c2.y * (p0.x - c0.x)) / (-c2.x * p2.y + p2.x * c2.y);
+        ds = (-p2.y * (p0.x - d0.x) + p2.x * (p0.y - d0.y)) / (-d2.x * p2.y + p2.x * d2.y);
+        dt = ( d2.x * (p0.y - d0.y) - d2.y * (p0.x - d0.x)) / (-d2.x * p2.y + p2.x * d2.y);
+        
+        //If the "line" from weaponPrimary.pos intersects with top, bottom, left, or right
+        if (as >= 0 && as <= 1 && at >= 0 && at <= 1) {
+            rtrn[0] = true;
+            rtrn[1] = new PVector(p0.x + (at * p2.x), p0.y + (at * p2.y));
+            return rtrn;
+        } else if (bs >= 0 && bs <= 1 && bt >= 0 && bt <= 1) {
+            rtrn[0] = true;
+            rtrn[1] = new PVector(p0.x + (bt * p2.x), p0.y + (bt * p2.y));
+            return rtrn;
+        } else if (cs >= 0 && cs <= 1 && ct >= 0 && ct <= 1) {
+            rtrn[0] = true;
+            rtrn[1] = new PVector(p0.x + (ct * p2.x), p0.y + (ct * p2.y));
+            return rtrn;
+        } else if (ds >= 0 && ds <= 1 && dt >= 0 && dt <= 1) {
+            rtrn[0] = true;
+            rtrn[1] = new PVector(p0.x + (dt * p2.x), p0.y + (dt * p2.y));
+            return rtrn;
+        } else {
+            //Return false with empty PVector
+            rtrn[0] = false;
+            rtrn[1] = new PVector();
+            return rtrn;
         }
-        //left & right
-        if(abs(cy-rectCenterY)<=rectH/2 && abs(cx-rectCenterX)<=rectW/2 +r){
-            return true;
-        }
-        //corners
-        if(dist(rx,ry,cx,cy)<=r || dist(rx+rectW,ry,cx,cy)<=r || dist(rx,ry+rectH,cx,cy)<=r || dist(rx+rectW,ry+rectH,cx,cy)<=r){
-            return true; 
-        }
-        //TODO: Handle backward FOV fov cone
-        return false;
     }
 
+    //Rotate to aim at target
+    private void rotateToTarget() {
+        if (atan2(currentTarget.pos.y - this.weaponPrimary.pos.y, currentTarget.pos.x - this.weaponPrimary.pos.x) - atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) >= 0) {
+            rotation += radians(rotationSpeed)/frameRate;
+        } else {
+            rotation -= radians(rotationSpeed)/frameRate;
+        }
+    }
+    
+    //Global spotting function NEED TO ADD CASE FOR IF TARGET IS IN BLINDSPOT
     void spotting() {
         loadedCharacters.forEach((c) -> {
             //If character isn't on the same layer, ignore it. If character is on the same side, ignore it.
             if (c.layer != this.layer || c.side == this.side) return;
             if (c != this) {
                 //Check if the character is visible after passing all preliminary checks to this point.
-                if (checkVisibility(c)) {
+                if (checkInCircle(c, this.fovDistance)) {
                     currentTarget = c;
                 }
             }
@@ -169,14 +247,19 @@ class Character extends Entity implements ICharacter {
         ai();
     }
 
+    //Global ai function
     void ai() {
         if (currentTarget != null) {
-            //If thing 1 is in line of sight of thing 2
-            if (!(abs(atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) - rotation) % TWO_PI < 0.1 )) {
-                rotation -= 1/frameRate;
-
+            //If target is in line of sight.
+            //OLD CODE: abs(atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) - rotation) % TWO_PI < 0.1
+            if ((boolean)isAimingAt(currentTarget)[0] == false) {
+                //If we're not looking at the man, rotate in his direction
+                rotateToTarget();
+            } else {
+                //If we're looking at the dude cap his ass, but keep trying to rotate towards center to increase accuracy
+                rotateToTarget();
+                this.weaponPrimary.fire();
             }
-            println(abs(atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) - rotation));
         }
     }
 }
@@ -190,6 +273,15 @@ class Weapon extends Entity implements IWeapon {
     float rof;
     int lastShot;
     float inaccuracy;
+    
+    //Ammo values; ammo per shot is controlled in each individual weapon entity, and as such ammo values that aren't set are implicitly infinite.
+    //Current ammo in weapon and maximum allowed in weapon.
+    int ammoCurrent;
+    int ammoCurrentMaximum;
+
+    //Total ammo and maximum able to be carried.
+    int ammoTotal;
+    int ammoTotalMaximum;
 
     //Where the projectile will come from.
     PVector projectileOrigin = new PVector(pos.x, pos.y);
@@ -214,12 +306,18 @@ class Projectile extends Entity implements IProjectile {
     //Velocity in pixels/second
     int velocity;
 
+    //Blast radius (damages anything in this radius)
+    int blastRadius;
+
+    //Origin of projectile
     PVector origin = new PVector();
 
+    //Parent weapon
     Weapon parent;
 
     void update() {
         if (exists) {
+            //If the projectile still exists, run this stuff.
             w = sprite.width;
             h = sprite.height;
 
@@ -233,8 +331,38 @@ class Projectile extends Entity implements IProjectile {
             popMatrix();
             //Using a "lifetime" variable since the range is wacky at spawn.
             if (origin.dist(pos) >= maxRange) {
-                expire();
+                //Apply damage in blast radius
+                if (blastRadius > 0) {
+                }
+                //expire();
             }
+
+            //Hit registration
+            loadedCharacters.forEach((c) -> {
+                //If character isn't on the same layer as the projectile, ignore it.
+                if (c.layer != this.layer) return;
+
+                //TODO: Find trig
+                float xthing = (this.pos.x - c.pos.x) * cos(c.rotation) - (this.pos.y - c.pos.y) * sin(c.rotation);
+                float ything = (this.pos.x - c.pos.x) * sin(c.rotation) - (this.pos.y - c.pos.y) * cos(c.rotation);
+                if (
+                    abs(xthing) <= c.w/2
+                    &&
+                    abs(ything) <= c.h/2 
+                    && 
+                    exists
+                ) {
+                    exists = false;
+                    int damage = int(random(damageLower, damageUpper));
+                    if (c.curShield > 0) {
+                        int damageLeftOver = damage - c.curShield;
+                        c.curShield -= damage - damageLeftOver;
+                        c.curHP -= damageLeftOver;
+                    } else {
+                        c.curHP -= damage;
+                    }
+                }
+            });
         }
     }
 
