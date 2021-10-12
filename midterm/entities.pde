@@ -107,8 +107,20 @@ class Entity implements IEntity {
 }
 
 class Character extends Entity implements ICharacter {
+    //If true, cease AI functions.
+    boolean braindead = false;
+
     int maxShield;
     int curShield;
+
+    //How long since damage was taken.
+    int shieldTimer;
+    //How many ticks the shield has been regenerating for..
+    int shieldRegenTimer;
+    //What percentage of shield to regain per second of regen
+    float shieldRegenRate = 25.0;
+    //Regen shields 8 seconds after taking no damage.
+    int shieldRegen = 8;
 
     Character currentTarget;
     //Rotation speed of the character (degrees per second)
@@ -155,6 +167,15 @@ class Character extends Entity implements ICharacter {
                 x = x + mag;
             break;
         }
+    }
+
+    //Movement without animations (meant for space stuff mainly)
+    void movementStatic(float dir, float mag){
+        float x = pos.x;
+        float y = pos.y;
+        //Make speed scale so things meant to be 'further away' seem further away.
+        mag = mag * (scaleX + scaleY / 2);
+        pos.set(x + mag*cos(dir), y + mag*sin(dir));
     }
     
     void death(){}
@@ -236,22 +257,27 @@ class Character extends Entity implements ICharacter {
     
     //Global spotting function NEED TO ADD CASE FOR IF TARGET IS IN BLINDSPOT
     void spotting() {
-        loadedCharacters.forEach((c) -> {
-            //If character isn't on the same layer, ignore it. If character is on the same side, ignore it.
-            if (c.layer != this.layer || c.side == this.side) return;
-            if (c != this) {
-                //Check if the character is visible after passing all preliminary checks to this point.
-                if (checkInCircle(c, this.fovDistance)) {
-                    currentTarget = c;
+        //Since spotting is the root of the AI workflow, we'll just check if the character is braindead here.
+        if (!braindead) {
+            loadedCharacters.forEach((c) -> {
+                //If character isn't on the same layer, ignore it. If character is on the same side, ignore it.
+                if (c.layer != this.layer || c.side == this.side || c.alive != true || c.braindead != false) return;
+                if (c != this) {
+                    //Check if the character is visible after passing all preliminary checks to this point.
+                    if (checkInCircle(c, this.fovDistance)) {
+                        currentTarget = c;
+                    }
                 }
-            }
-        });
-        ai();
+            });
+            ai();
+        } else {
+            currentTarget = null;
+        }
     }
 
-    //Global ai function
+    //Global ai function; doubles as a global "update" function
     void ai() {
-        if (currentTarget != null) {
+        if (currentTarget != null && currentTarget.alive == true) {
             //If target is in line of sight.
             //OLD CODE: abs(atan2(currentTarget.pos.y - this.pos.y, currentTarget.pos.x - this.pos.x) - rotation) % TWO_PI < 0.1
             if ((boolean)isAimingAt(currentTarget)[0] == false) {
@@ -261,7 +287,25 @@ class Character extends Entity implements ICharacter {
                 //If we're looking at the dude cap his ass, but keep trying to rotate towards center to increase accuracy
                 rotateToTarget();
                 this.weaponPrimary.fire();
+                if (this.weaponSecondary != null ) this.weaponSecondary.fire();
             }
+        } else {
+            //Make it move or something when we don't have a target
+            movementStatic(rotation, movementSpeed);
+        }
+        //Shield stuff
+        
+        shieldTimer++;
+        if (shieldTimer >= shieldRegen * frameRate && curShield < maxShield) {
+            shieldRegenTimer++;
+            curShield += (shieldRegenRate/100) * (maxShield/frameRate);
+            if (curShield > maxShield) curShield = maxShield;
+        }
+
+        if (curShield < 0) curShield = 0;
+        if (curHP <= 0) {
+            alive = false;
+            death();
         }
     }
 }
@@ -314,8 +358,8 @@ class Projectile extends Entity implements IProjectile {
     //Origin of projectile
     PVector origin = new PVector();
 
-    //Parent weapon
-    Weapon parent;
+    //Character that fired projectile
+    Character parent;
 
     void update() {
         if (exists) {
@@ -329,9 +373,11 @@ class Projectile extends Entity implements IProjectile {
             translate(pos.x,pos.y);
             rotate(rotation);
             scale(scaleX, scaleY);
+            imageMode(CENTER);
             image(sprite,0,0);
             popMatrix();
-            //Using a "lifetime" variable since the range is wacky at spawn.
+            
+            //Projectile expiration
             if (origin.dist(pos) >= maxRange) {
                 //Apply damage in blast radius
                 if (blastRadius > 0) {
@@ -341,8 +387,8 @@ class Projectile extends Entity implements IProjectile {
 
             //Hit registration
             loadedCharacters.forEach((c) -> {
-                //If character isn't on the same layer as the projectile, ignore it.
-                if (c.layer != this.layer) return;
+                //If character isn't on the same layer as the projectile, ignore it. If it's not alive, or it's the originating character, we also ignore it.
+                if (c.layer != this.layer || c.alive != true || c == parent) return;
 
                 float xthing = (this.pos.x - c.pos.x) * cos(c.rotation) - (this.pos.y - c.pos.y) * sin(c.rotation);
                 float ything = (this.pos.x - c.pos.x) * sin(c.rotation) - (this.pos.y - c.pos.y) * cos(c.rotation);
@@ -356,12 +402,13 @@ class Projectile extends Entity implements IProjectile {
                     exists = false;
                     int damage = int(random(damageLower, damageUpper));
                     if (c.curShield > 0) {
-                        int damageLeftOver = damage - c.curShield;
-                        c.curShield -= damage - damageLeftOver;
-                        c.curHP -= damageLeftOver;
+                        c.curShield -= damage;
+                        if(c.curShield < 0) c.curHP += c.curShield;
                     } else {
                         c.curHP -= damage;
                     }
+                    c.shieldTimer = 0;
+                    c.shieldRegenTimer = 0;
                     hit();
                 }
             });
@@ -384,28 +431,42 @@ class ParticleEffect extends Entity {
 
     //Current animation phase
     int curPhase = 0;
-    ParticleEffect(float xpos, float ypos, int maxL, float scale, String[] spritesArray){
+
+    String[] spritesArray;
+
+    int opacity = 255;
+
+    float scale = 1;
+
+    ParticleEffect(float xpos, float ypos, int maxL, float s, String[] sA){
         pos.set(xpos, ypos);
         maxLifetime = maxL;
-        sprite = loadImage(spritesArray[0]);
+        spritesArray = sA;
+        sprite = loadImage(sA[0]);
         spriteFlipped = sprite.copy();
-        sprite.resize(ceil(sprite.width * scale), ceil(sprite.height * scale));
+        sprite.resize(ceil(sprite.width * s), ceil(sprite.height * s));
+        scale = s;
     }
     void update() {
         curLifetime++;
         if (curLifetime < maxLifetime) {
             //Total count of animation phases
-            int phaseCount = spritesArray.length();
+            int phaseCount = spritesArray.length;
             //How long each animation phase is
             int phaseLength = int(maxLifetime/phaseCount);
             //int thing = curLifetime % phaseLength;
-            for(curPhase; curLifetime % phaseLength = 0; curPhase++) {
+            if(curLifetime % phaseLength == 0) {
+                curPhase++;
                 sprite = loadImage(spritesArray[curPhase]);
             }
             spriteFlipped = sprite.copy();
-            spriteFlipped.resize(ceil(sprite.width + sprite.width * curLifetime/maxLifetime), ceil(sprite.height + sprite.height * curLifetime/maxLifetime));
-            tint(255, opacity);
+            spriteFlipped.resize(ceil(sprite.width + sprite.width * scale * curLifetime/maxLifetime), ceil(sprite.height + sprite.height * scale * curLifetime/maxLifetime));
+            if(curPhase == spritesArray.length - 1) {
+                opacity = 255 - ((curLifetime/phaseCount)/(maxLifetime/phaseCount)) * 255;
+                tint(255, opacity);
+            }
             image(spriteFlipped, pos.x - w/2, pos.y - h/2);
+            noTint();
         }
     }
 }

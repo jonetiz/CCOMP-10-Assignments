@@ -19,9 +19,23 @@
 class MainMenu implements GameState {
     PImage planetArcadia;
 
-    ShipHalcyon shipUnsc1 = new ShipHalcyon(1500, 200, 1.0, 1.0, 180, 1);
-    ShipHalcyon shipUnsc2 = new ShipHalcyon(1800, 300, 0.8, 0.8, 180, 2);
-    CovenantSupercarrier covieShip = new CovenantSupercarrier(0, 400, 1.0, 1.0, 0, 1);
+    //Spawn ships in random positions (Covies on left, UNSC on right side of screen.)
+    ShipHalcyon shipUnsc1 = new ShipHalcyon(width-random(width/3), random(height), 1.0, 1.0, 180, 1);
+    ShipCruiserUNSC shipUnsc2 = new ShipCruiserUNSC(width-random(width/3), random(height), 1.0, 1.0, 180, 1);
+    ShipFrigateUNSC shipUnsc3 = new ShipFrigateUNSC(width-random(width/3), random(height), 1, 1, 180, 1);
+    ShipFrigateUNSC shipUnsc4 = new ShipFrigateUNSC(width-random(width/3), random(height), 1, 1, 180, 1);
+    ShipFrigateUNSC shipUnsc5 = new ShipFrigateUNSC(width-random(width/3), random(height), 1, 1, 180, 1);
+    ShipDestroyerUNSC shipUnsc6 = new ShipDestroyerUNSC(width-random(width/3), random(height), 1, 1, 180, 1);
+    ShipDestroyerUNSC shipUnsc7 = new ShipDestroyerUNSC(width-random(width/3), random(height), 1, 1, 180, 1);
+    CovenantSupercarrier covieShip1 = new CovenantSupercarrier(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CovenantCCS covieShip2 = new CovenantCCS(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CovenantCCS covieShip3 = new CovenantCCS(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CorvetteCovenant covieShip4 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CorvetteCovenant covieShip5 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CorvetteCovenant covieShip6 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CorvetteCovenant covieShip7 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CorvetteCovenant covieShip8 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
+    CorvetteCovenant covieShip9 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
 
     Background bg;
     MusicPlaylist menuMusic = new MusicPlaylist(
@@ -101,6 +115,31 @@ class MainMenu implements GameState {
 
         loadedCharacters.forEach((c) -> {
             c.update();
+            //Recycle characters so the scene goes on perpetually.
+            if (c.alive != true) {
+                c.braindead = true;
+                switch (c.side) {
+                    //UNSC Ships
+                    case 1:
+                        c.rotation = radians(180);
+                        c.pos.set(width + 1000, random(height));
+                    break;
+                    //Covenant ships
+                    case 2:
+                        c.rotation = 0;
+                        c.pos.set(-1000, random(height));
+                    break;
+                }
+                c.curHP = c.maxHP;
+                c.curShield = c.maxShield;
+                c.alive = true;
+            }
+            if (c.braindead) {
+                c.movementStatic(c.rotation, c.movementSpeed);
+                if (c.pos.x > random(250,1250) && c.pos.x < width-random(250,1250)) {
+                    c.braindead = false;
+                }
+            }
         });
         loadedPFX.forEach((fx) -> {
             fx.update();
