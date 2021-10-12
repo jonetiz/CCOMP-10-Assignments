@@ -102,6 +102,9 @@ class MainMenu implements GameState {
         loadedCharacters.forEach((c) -> {
             c.update();
         });
+        loadedPFX.forEach((fx) -> {
+            fx.update();
+        });
 
         mainMenuWrapper.update();
 

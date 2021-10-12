@@ -68,6 +68,8 @@ class Entity implements IEntity {
 
     int maxHP;
     int curHP;
+    
+    boolean alive = true;
 
     //Which "layer" is the entity on (used to differentiate any background/foreground elements); 0 - foreground, 1 or higher - background
     int layer;
@@ -342,7 +344,6 @@ class Projectile extends Entity implements IProjectile {
                 //If character isn't on the same layer as the projectile, ignore it.
                 if (c.layer != this.layer) return;
 
-                //TODO: Find trig
                 float xthing = (this.pos.x - c.pos.x) * cos(c.rotation) - (this.pos.y - c.pos.y) * sin(c.rotation);
                 float ything = (this.pos.x - c.pos.x) * sin(c.rotation) - (this.pos.y - c.pos.y) * cos(c.rotation);
                 if (
@@ -361,6 +362,7 @@ class Projectile extends Entity implements IProjectile {
                     } else {
                         c.curHP -= damage;
                     }
+                    hit();
                 }
             });
         }
@@ -373,4 +375,37 @@ class Projectile extends Entity implements IProjectile {
 
 class WorldObject extends Entity implements IWorldObject {
     void touch(){}
+}
+
+class ParticleEffect extends Entity {
+    //curLifetime is how long the effect has been "alive" in ticks. maxLifetime is when the effect will "expire". Default max lifetime is 60 (about a second)
+    int curLifetime = 0;
+    int maxLifetime = 60;
+
+    //Current animation phase
+    int curPhase = 0;
+    ParticleEffect(float xpos, float ypos, int maxL, float scale, String[] spritesArray){
+        pos.set(xpos, ypos);
+        maxLifetime = maxL;
+        sprite = loadImage(spritesArray[0]);
+        spriteFlipped = sprite.copy();
+        sprite.resize(ceil(sprite.width * scale), ceil(sprite.height * scale));
+    }
+    void update() {
+        curLifetime++;
+        if (curLifetime < maxLifetime) {
+            //Total count of animation phases
+            int phaseCount = spritesArray.length();
+            //How long each animation phase is
+            int phaseLength = int(maxLifetime/phaseCount);
+            //int thing = curLifetime % phaseLength;
+            for(curPhase; curLifetime % phaseLength = 0; curPhase++) {
+                sprite = loadImage(spritesArray[curPhase]);
+            }
+            spriteFlipped = sprite.copy();
+            spriteFlipped.resize(ceil(sprite.width + sprite.width * curLifetime/maxLifetime), ceil(sprite.height + sprite.height * curLifetime/maxLifetime));
+            tint(255, opacity);
+            image(spriteFlipped, pos.x - w/2, pos.y - h/2);
+        }
+    }
 }

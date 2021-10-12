@@ -42,40 +42,47 @@ class ShipHalcyon extends Character {
         spriteFlipped = loadImage("data\\img\\char\\space\\unsc-halcyon-f.png");
     }
     void update() { 
-        rect(pos.x, pos.y, 16,16);
-        pushMatrix();
-        translate(pos.x, pos.y);
-        rotate(rotation);
-        imageMode(CENTER);
-        rectMode(CENTER);
-        scale(scaleX, scaleY);
-        if(sin(rotation + radians(90)) <= 0) {
-            image(spriteFlipped, 0, 0);
-        } else {
-            image(sprite, 0, 0);
-        }
-        if ((boolean)userConfig.debug.value) {
-            noFill();
-            strokeWeight(1);
-            stroke(#00ff00);
-            rect(0, 0, w, h);
-            stroke(#ff0000);
-            arc(0, 0, fovDistance*2, fovDistance*2, -radians(fov/2), radians(fov/2), PIE);
-            textFont(standardFont);
-            textSize(int(w/10));
-            textAlign(RIGHT);
-            text(getClass().getSimpleName(), w/2, h/2);
-            line(weaponOffset.x, weaponOffset.y, 1500, 0);
-        }
-        popMatrix();
+        if (alive) {
+            rect(pos.x, pos.y, 16,16);
+            pushMatrix();
+            translate(pos.x, pos.y);
+            rotate(rotation);
+            imageMode(CENTER);
+            rectMode(CENTER);
+            scale(scaleX, scaleY);
+            if(sin(rotation + radians(90)) <= 0) {
+                image(spriteFlipped, 0, 0);
+            } else {
+                image(sprite, 0, 0);
+            }
+            if ((boolean)userConfig.debug.value) {
+                noFill();
+                strokeWeight(1);
+                stroke(#00ff00);
+                rect(0, 0, w, h);
+                stroke(#ff0000);
+                arc(0, 0, fovDistance*2, fovDistance*2, -radians(fov/2), radians(fov/2), PIE);
+                textFont(standardFont);
+                textSize(int(w/10));
+                textAlign(RIGHT);
+                text(getClass().getSimpleName(), w/2, h/2);
+                line(weaponOffset.x, weaponOffset.y, 1500, 0);
+            }
+            popMatrix();
 
-        weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y );
-        weaponPrimary.rotation = rotation;
-        weaponPrimary.scaleX = scaleX;
-        weaponPrimary.scaleY = scaleY;
+            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y );
+            weaponPrimary.rotation = rotation;
+            weaponPrimary.scaleX = scaleX;
+            weaponPrimary.scaleY = scaleY;
 
-        weaponPrimary.update();
-        spotting();
+            weaponPrimary.update();
+            spotting();
+
+            if (curShield < 0) curShield = 0;
+            if (curHP <= 0) {
+                alive = false;
+            }
+        }
     }
 }
 
@@ -124,7 +131,13 @@ class MacRound extends Projectile {
     }
 
     void hit() {
-        
+        String[] particleArray = {
+            "data\\img\\proj\\space\\unsc-explosion-1.png",
+            "data\\img\\proj\\space\\unsc-explosion-2.png",
+            "data\\img\\proj\\space\\unsc-explosion-3.png"
+        };
+
+        loadedPFX.add(new ParticleEffect(pos.x, pos.y, 90, random(2), new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\unsc-explosion-4.png", "data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 
     void expire() {
@@ -157,40 +170,46 @@ class CovenantSupercarrier extends Character {
         spriteFlipped = loadImage("data\\img\\char\\space\\cov-super-f.png");
     }
     void update() {
-        rect(pos.x, pos.y, 16,16);
-        pushMatrix();
-        translate(pos.x, pos.y);
-        rotate(rotation);
-        imageMode(CENTER);
-        rectMode(CENTER);
-        scale(scaleX, scaleY);
-        if(sin(rotation + radians(90)) <= 0) {
-            image(spriteFlipped, 0, 0);
-        } else {
-            image(sprite, 0, 0);
-        }
-        if ((boolean)userConfig.debug.value) {
-            noFill();
-            strokeWeight(1);
-            stroke(#00ff00);
-            rect(0, 0, w, h);
-            stroke(#ff0000);
-            arc(0, 0, fovDistance*2, fovDistance*2, -radians(fov/2), radians(fov/2), PIE);
-            textFont(standardFont);
-            textSize(int(w/10));
-            textAlign(RIGHT);
-            text(getClass().getSimpleName(), w/2, h/2);
-            line(weaponOffset.x, weaponOffset.y, 1500, 0);
-        }
-        popMatrix();
+        if (alive) {
+            rect(pos.x, pos.y, 16,16);
+            pushMatrix();
+            translate(pos.x, pos.y);
+            rotate(rotation);
+            imageMode(CENTER);
+            rectMode(CENTER);
+            scale(scaleX, scaleY);
+            if(sin(rotation + radians(90)) <= 0) {
+                image(spriteFlipped, 0, 0);
+            } else {
+                image(sprite, 0, 0);
+            }
+            if ((boolean)userConfig.debug.value) {
+                noFill();
+                strokeWeight(1);
+                stroke(#00ff00);
+                rect(0, 0, w, h);
+                stroke(#ff0000);
+                arc(0, 0, fovDistance*2, fovDistance*2, -radians(fov/2), radians(fov/2), PIE);
+                textFont(standardFont);
+                textSize(int(w/10));
+                textAlign(RIGHT);
+                text(getClass().getSimpleName(), w/2, h/2);
+                line(weaponOffset.x, weaponOffset.y, 1500, 0);
+            }
+            popMatrix();
 
-        weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y );
-        weaponPrimary.rotation = rotation;
-        weaponPrimary.scaleX = scaleX;
-        weaponPrimary.scaleY = scaleY;
+            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y );
+            weaponPrimary.rotation = rotation;
+            weaponPrimary.scaleX = scaleX;
+            weaponPrimary.scaleY = scaleY;
 
-        weaponPrimary.update();
-        spotting();
+            weaponPrimary.update();
+            spotting();
+            if (curShield < 0) curShield = 0;
+            if (curHP <= 0) {
+                alive = false;
+            }
+        }
     }
 }
 
@@ -239,7 +258,13 @@ class CovenantLargePlasmaBall extends Projectile {
     }
 
     void hit() {
-        
+        String[] particleArray = {
+            "data\\img\\proj\\space\\cov-explosion-1.png",
+            "data\\img\\proj\\space\\cov-explosion-2.png",
+            "data\\img\\proj\\space\\cov-explosion-3.png"
+        };
+
+        loadedPFX.add(new ParticleEffect(pos.x, pos.y, 90, random(2), new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\cov-explosion-4.png", "data\\img\\proj\\space\\cov-explosion-5.png"}));
     }
 
     void expire() {

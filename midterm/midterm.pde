@@ -25,6 +25,7 @@ MainMenu mainMenu;
 
 //Currently loaded characters, used for targeting/aggro iteration.
 ArrayList<Character> loadedCharacters = new ArrayList<Character>();
+ArrayList<ParticleEffect> loadedPFX = new ArrayList<ParticleEffect>();
 
 //Menu sounds
 SoundEffect menuBeep;
