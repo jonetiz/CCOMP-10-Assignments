@@ -25,11 +25,30 @@ class BackgroundDetail {
     //Position
     float x;
     float y;
+
+    //Image used for certain details
+    PImage img;
+
+    //Array of cloud image paths
+    String[] cloudsArray = {
+        "data\\img\\world\\bg\\cloud-1.png",
+        "data\\img\\world\\bg\\cloud-2.png",
+        "data\\img\\world\\bg\\cloud-3.png",
+        "data\\img\\world\\bg\\cloud-4.png",
+        "data\\img\\world\\bg\\cloud-5.png",
+        "data\\img\\world\\bg\\cloud-6.png"
+    };
+    
     BackgroundDetail(String t, int min, int max, int xpos, int ypos) {
         type = t;
         size = int(random(min, max));
         x = xpos;
         y = ypos;
+        if (type == "cloud") {
+            //Get random cloud image
+            img = loadImage(cloudsArray[int(random(0,5))]);
+            img.resize(size, size);
+        }
     }
     void update() {
         switch(type){
@@ -51,6 +70,16 @@ class BackgroundDetail {
                     y = int(random(height));
                 }
             break;
+            case "cloud":
+                imageMode(CENTER);
+                tint(255, 128);
+                image(img, x, y);
+                //tint(255, 255);
+                if (x < 0 - size) {
+                    x = width + size;
+                    y = int(random(height));
+                }
+            break;
         }
     }
 }
@@ -67,7 +96,7 @@ class Background {
     float speed;
 
     Background(color c, String t, float s, int d, int min, int max) {
-        //c = bgcolor, t = backgrounddetail type, d = density (count actually, how many are generated per "screen" w*h); min/max passed to backgrounddetail
+        //c = bgcolor, t = backgrounddetail type, s = how fast the detail passively moves across screen, d = density (count actually, how many are generated per "screen" w*h); min/max passed to backgrounddetail
         background = createImage(width * 4, height, RGB);
         for(int i = 0; i < background.pixels.length; i++) {
             background.pixels[i] = color(c);

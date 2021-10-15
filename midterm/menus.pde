@@ -22,6 +22,10 @@ PFont menuFont2;
 PFont standardFont;
 PImage menuLogo;
 
+PImage menuCursor;
+PImage menuCursorPressed;
+PImage currentCursor;
+
 interface ButtonCallback {
     void call();
 }
@@ -36,21 +40,62 @@ class Menu {
 
 class MenuWrapper {
     Menu currentMenu;
+    MenuWrapper() { }
     MenuWrapper(Menu cm) {
         currentMenu = cm;
     }
     void update() {
         currentMenu.update();
+
+        //Set cursor to default when in a menu
+        if (mousePressed) {
+            noTint();
+            currentCursor = menuCursorPressed;
+        } else {
+            noTint();
+            currentCursor = menuCursor;
+        }
+    }
+    void setMenu(Menu set) {
+        currentMenu = set;
     }
 }
 
 //Main menu menu
 class MenuMain extends Menu {
-    MenuMain() {
+    MenuWrapper menuWrapper;
+
+    MenuButton campaignButton = new MenuButton(width/2, height/2, 300, 50, "Campaign", false,
+        new ButtonCallback() {
+            void call() { menuWrapper.setMenu(mainMenu.campaignMenu); }
+        }
+    );
+    MenuButton endureButton = new MenuButton(width/2, height/2 + 75, 300, 50, "Endure", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton multiplayerButton = new MenuButton(width/2, height/2 + 150, 300, 50, "Multiplayer", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton settingsButton = new MenuButton(width/2, height/2 + 225, 300, 50, "Settings", false,
+        new ButtonCallback() {
+            void call() { menuWrapper.setMenu(mainMenu.settingsMenu); }
+        }
+    );
+    MenuButton exitButton = new MenuButton(width/2, height/2 + 300, 300, 50, "Exit", false,
+        new ButtonCallback() {
+            void call() { exit(); }
+        }
+    );
+
+    MenuMain(MenuWrapper mw) {
         title = "Main Menu";
-        elements = new ArrayList<MenuElement>();
         menuLogo = loadImage("data\\img\\menu-temp.png");
         menuLogo.resize(512,128);
+        menuWrapper = mw;
     }
     void update() {
         imageMode(CENTER);
@@ -62,9 +107,69 @@ class MenuMain extends Menu {
         textAlign(CENTER);
         textFont(menuFont1);
         text(title.toUpperCase(), width/2, height*0.4 + 50);
-        elements.forEach((e) -> {
-            e.update();
-        });
+        
+        campaignButton.update();
+        endureButton.update();
+        multiplayerButton.update();
+        settingsButton.update();
+        exitButton.update();
+    }
+}
+
+//Pause menu (small)
+class PauseMenu extends Menu {
+    MenuWrapper menuWrapper;
+
+    MenuButton continueButton = new MenuButton(width/2, height/2 - 100, 250, 50, "Continue", true,
+        new ButtonCallback() {
+            void call() { campaign.paused = false; }
+        }
+    );
+    MenuButton restartButton = new MenuButton(width/2, height/2 - 25, 250, 50, "Restart", true,
+        new ButtonCallback() {
+            //TODO: Add restart case when restart mission becomes a thing
+            void call() {  }
+        }
+    );
+    MenuButton settingsButton = new MenuButton(width/2, height/2 + 50, 250, 50, "Settings", true,
+        new ButtonCallback() {
+            void call() { menuWrapper.setMenu(campaign.settingsMenu); }
+        }
+    );
+    MenuButton exitMainMenuButton = new MenuButton(width/2, height/2 + 125, 250, 50, "Main Menu", true,
+        new ButtonCallback() {
+            void call() { gameState = mainMenu; }
+        }
+    );
+    MenuButton exitWindowsButton = new MenuButton(width/2, height/2 + 200, 250, 50, "Windows", true,
+        new ButtonCallback() {
+            void call() { exit(); }
+        }
+    );
+
+    PauseMenu(MenuWrapper mw) {
+        menuWrapper = mw;
+    }
+    void update() {
+        rectMode(CENTER);
+        stroke(#2399ff);
+        fill(#051f43, 80);
+        strokeWeight(4);
+        rect(width/2, height/2, 300, 500, 20);
+        fill(#ffffff);
+        textFont(menuFont1);
+        textAlign(CENTER);
+        textSize(28);
+        text("GAME PAUSED", width/2, height/2 - 200);
+        strokeWeight(4);
+        stroke(#2399ff);
+        line(width/2-width/14, height/2 - 180, width/2+width/14, height/2 - 180);
+        
+        continueButton.update();
+        restartButton.update();
+        settingsButton.update();
+        exitMainMenuButton.update();
+        exitWindowsButton.update();
     }
 }
 
@@ -91,7 +196,7 @@ class MenuLarge extends Menu {
         fill(color(#051f43,255));
         vertex(-4, 200);
         vertex(width + 4, 200);
-        fill(color(#051f43,0));
+        fill(color(#051f43,80));
         vertex(width + 4, height - 200);
         vertex(-4, height - 200);
         endShape();
@@ -106,16 +211,41 @@ class MenuLarge extends Menu {
 }
 
 class MenuCampaign extends Menu {
-    MenuCampaign() {
+    MenuWrapper menuWrapper;
+    Menu exitMenu;
+
+    MenuButton continueButton = new MenuButton(width/2, height/2, 300, 50, "Continue", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton newGameButton = new MenuButton(width/2, height/2 + 75, 300, 50, "New Game", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton loadGameButton = new MenuButton(width/2, height/2 + 150, 300, 50, "Load Game", false,
+        new ButtonCallback() {
+            void call() { println("asdf"); }
+        }
+    );
+    MenuButton campaignBackButton = new MenuButton(width/2, height/2 + 225, 300, 50, "Back", false,
+        new ButtonCallback() {
+            void call() { menuWrapper.setMenu(exitMenu); }
+        }
+    );
+
+    MenuCampaign(MenuWrapper mw, Menu exit) {
         title = "Campaign";
-        elements = new ArrayList<MenuElement>();
         menuLogo = loadImage("data\\img\\menu-temp.png");
         menuLogo.resize(512,128);
+        menuWrapper = mw;
+        exitMenu = exit;
     }
     void update() {
         if (key == ESC) {
             key = 0;
-            mainMenu.mainMenuWrapper = new MenuWrapper(mainMenu.mainMenuMenu);
+            menuWrapper.setMenu(exitMenu);
         }
 
         imageMode(CENTER);
@@ -127,20 +257,34 @@ class MenuCampaign extends Menu {
         textAlign(CENTER);
         textFont(menuFont1);
         text(title.toUpperCase(), width/2, height*0.4 + 50);
-        elements.forEach((e) -> {
-            e.update();
-        });
+
+        continueButton.update();
+        newGameButton.update();
+        loadGameButton.update();
+        campaignBackButton.update();
     }
 }
 
 class SettingsMenu extends MenuLarge {
-    SettingsMenu() {
+    MenuWrapper menuWrapper;
+    Menu exitMenu;
+
+    MenuSlider musicSlider = new MenuSlider(100, 300, 400, userConfig.musicVolume);
+    MenuSlider ambientSlider = new MenuSlider(100, 450, 400, userConfig.ambientVolume);
+    MenuSlider sfxSlider = new MenuSlider(100, 600, 400, userConfig.sfxVolume);
+    MenuButton settingsBackButton = new MenuButton(width-200, height-150, 100, 50, "Back", true, new ButtonCallback() {
+        void call() { menuWrapper.setMenu(exitMenu); }
+    });
+
+    SettingsMenu(MenuWrapper mw, Menu exit) {
         super("Settings");
+        menuWrapper = mw;
+        exitMenu = exit;
     }
     void specialCase() {
         if (key == ESC) {
             key = 0;
-            mainMenu.mainMenuWrapper = new MenuWrapper(mainMenu.mainMenuMenu);
+            menuWrapper.setMenu(exitMenu);
         }
 
         //Display setting stuff
@@ -150,6 +294,11 @@ class SettingsMenu extends MenuLarge {
         text("MUSIC VOLUME", 100, 250);
         text("AMBIENCE VOLUME", 100, 400);
         text("SFX VOLUME", 100, 550);
+
+        musicSlider.update();
+        ambientSlider.update();
+        sfxSlider.update();
+        settingsBackButton.update();
     }
 }
 
@@ -175,8 +324,7 @@ class MenuButton extends MenuElement {
     ButtonCallback callback;
 
 
-    MenuButton(Menu parent, int xbase, int ybase, int wid, int hei, String t, boolean bg, ButtonCallback cb) {
-        parent.elements.add(this);
+    MenuButton(int xbase, int ybase, int wid, int hei, String t, boolean bg, ButtonCallback cb) {
         x = xbase;
         y = ybase;
         w = wid;
@@ -184,18 +332,6 @@ class MenuButton extends MenuElement {
         text = t;
         background = bg;
         callback = cb;
-    }
-    MenuButton(Menu parent, int o, int wid, int hei, String t, boolean bg) {
-        parent.elements.add(this);
-        order = o;
-        w = wid;
-        h = hei;
-        text = t;
-        background = bg;
-
-        //Since we're going off ordering, we're going to automatically set position based on parent menu.
-        x = parent.ox;
-        y = parent.oy * o;
     }
 
     void update() {
@@ -243,8 +379,7 @@ class MenuSlider extends MenuElement {
     float sliderPos;
     ConfigParameter param;
     
-    MenuSlider(Menu parent, int xbase, int ybase, int wid, ConfigParameter p) {
-        parent.elements.add(this);
+    MenuSlider(int xbase, int ybase, int wid, ConfigParameter p) {
         x = xbase;
         y = ybase;
         w = wid;

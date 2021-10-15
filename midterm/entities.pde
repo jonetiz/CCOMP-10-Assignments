@@ -48,11 +48,6 @@ interface IProjectile {
     void expire();
 }
 
-interface IWorldObject {
-    //When something touches the WorldObject
-    void touch();
-}
-
 class Entity implements IEntity {
     PImage sprite;
     //Flipped sprite for certain use cases.
@@ -144,10 +139,6 @@ class Character extends Entity implements ICharacter {
 
     //0 = neutral, 1 = unsc, 2 = covenant
     int side;
-
-    Character() {
-        loadedCharacters.add(this);
-    }
 
     //Basic movement, need to add animations for most characters.
     void movement(int dir, float mag){
@@ -418,10 +409,6 @@ class Projectile extends Entity implements IProjectile {
     void hit(){}
 
     void expire(){}
-}
-
-class WorldObject extends Entity implements IWorldObject {
-    void touch(){}
 }
 
 class ParticleEffect extends Entity {

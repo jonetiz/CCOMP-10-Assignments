@@ -17,8 +17,6 @@
 */
 
 class MainMenu implements GameState {
-    PImage planetArcadia;
-
     //Spawn ships in random positions (Covies on left, UNSC on right side of screen.)
     ShipHalcyon shipUnsc1 = new ShipHalcyon(width-random(width/3), random(height), 1.0, 1.0, 180, 1);
     ShipCruiserUNSC shipUnsc2 = new ShipCruiserUNSC(width-random(width/3), random(height), 1.0, 1.0, 180, 1);
@@ -38,76 +36,43 @@ class MainMenu implements GameState {
     CorvetteCovenant covieShip9 = new CorvetteCovenant(random(width/3), random(height), 1.0, 1.0, 0, 1);
 
     Background bg;
+
+    //Music playlist definition for Main Menu
     MusicPlaylist menuMusic = new MusicPlaylist(
         new Music("data\\sound\\music\\halowars.wav"),
         new Music("data\\sound\\music\\combatevolved.wav")
     );
     
-    MenuMain mainMenuMenu = new MenuMain();
-    MenuButton campaignButton = new MenuButton(mainMenuMenu, width/2, height/2, 300, 50, "Campaign", false,
-        new ButtonCallback() {
-            void call() { mainMenuWrapper = new MenuWrapper(campaignMenu); }
-        }
-    );
-    MenuButton endureButton = new MenuButton(mainMenuMenu, width/2, height/2 + 75, 300, 50, "Endure", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
-    MenuButton multiplayerButton = new MenuButton(mainMenuMenu, width/2, height/2 + 150, 300, 50, "Multiplayer", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
-    MenuButton settingsButton = new MenuButton(mainMenuMenu, width/2, height/2 + 225, 300, 50, "Settings", false,
-        new ButtonCallback() {
-            void call() { mainMenuWrapper = new MenuWrapper(settingsMenu); }
-        }
-    );
-    MenuButton exitButton = new MenuButton(mainMenuMenu, width/2, height/2 + 300, 300, 50, "Exit", false,
-        new ButtonCallback() {
-            void call() { exit(); }
-        }
-    );
-
-    MenuCampaign campaignMenu = new MenuCampaign();
-    MenuButton continueButton = new MenuButton(campaignMenu, width/2, height/2, 300, 50, "Continue", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
-    MenuButton newGameButton = new MenuButton(campaignMenu, width/2, height/2 + 75, 300, 50, "New Game", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
-    MenuButton loadGameButton = new MenuButton(campaignMenu, width/2, height/2 + 150, 300, 50, "Load Game", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
-    MenuButton campaignBackButton = new MenuButton(campaignMenu, width/2, height/2 + 225, 300, 50, "Back", false,
-        new ButtonCallback() {
-            void call() { mainMenuWrapper = new MenuWrapper(mainMenuMenu); }
-        }
-    );
-
-    SettingsMenu settingsMenu = new SettingsMenu();
-    MenuSlider musicSlider = new MenuSlider(settingsMenu, 100, 300, 400, userConfig.musicVolume);
-    MenuSlider ambientSlider = new MenuSlider(settingsMenu, 100, 450, 400, userConfig.ambientVolume);
-    MenuSlider sfxSlider = new MenuSlider(settingsMenu, 100, 600, 400, userConfig.sfxVolume);
-    MenuButton settingsBackButton = new MenuButton(settingsMenu, width-200, height-150, 100, 50, "Back", true,
-        new ButtonCallback() {
-            void call() { mainMenuWrapper = new MenuWrapper(mainMenuMenu); }
-        }
-    );
+    //Menu definitions
+    MenuWrapper mainMenuWrapper = new MenuWrapper();
     
-    MenuWrapper mainMenuWrapper = new MenuWrapper(mainMenuMenu);
-
+    MenuMain mainMenuMenu = new MenuMain(mainMenuWrapper);
+    MenuCampaign campaignMenu = new MenuCampaign(mainMenuWrapper, mainMenuMenu);
+    SettingsMenu settingsMenu = new SettingsMenu(mainMenuWrapper, mainMenuMenu);
+    
     MainMenu() {
         bg = new Background(color(0), "star", 0.1, 180, 2, 8);
-        menuMusic.play();
+        mainMenuWrapper.setMenu(mainMenuMenu);
+        mainMenuMenu.menuWrapper = mainMenuWrapper;
+        campaignMenu.menuWrapper = mainMenuWrapper;
+        settingsMenu.menuWrapper = mainMenuWrapper;
+
+        loadedCharacters.add(shipUnsc1);
+        loadedCharacters.add(shipUnsc2);
+        loadedCharacters.add(shipUnsc3);
+        loadedCharacters.add(shipUnsc4);
+        loadedCharacters.add(shipUnsc5);
+        loadedCharacters.add(shipUnsc6);
+        loadedCharacters.add(covieShip1);
+        loadedCharacters.add(covieShip2);
+        loadedCharacters.add(covieShip3);
+        loadedCharacters.add(covieShip4);
+        loadedCharacters.add(covieShip5);
+        loadedCharacters.add(covieShip6);
+        loadedCharacters.add(covieShip7);
+        loadedCharacters.add(covieShip8);
     }
+    void pause() {}
     void update() {
         menuMusic.changeVolume((float)userConfig.musicVolume.value);
         menuMusic.update();
@@ -115,6 +80,17 @@ class MainMenu implements GameState {
 
         loadedCharacters.forEach((c) -> {
             c.update();
+
+            //limit projectiles in memory to 100 for optimization
+            if (c.weaponPrimary.ownedProjectiles.size() > 100) {
+                c.weaponPrimary.ownedProjectiles.remove(0);
+            }
+            if (c.weaponSecondary != null) {
+                if (c.weaponSecondary.ownedProjectiles.size() > 100) {
+                    c.weaponSecondary.ownedProjectiles.remove(0);
+                }
+            }
+
             //Recycle characters so the scene goes on perpetually.
             if (c.alive != true) {
                 c.braindead = true;
@@ -144,6 +120,11 @@ class MainMenu implements GameState {
         loadedPFX.forEach((fx) -> {
             fx.update();
         });
+
+        //limit particle effects in memory to 250 for optimization
+        if (loadedPFX.size() > 250) {
+            loadedPFX.remove(0);
+        }
 
         mainMenuWrapper.update();
 
