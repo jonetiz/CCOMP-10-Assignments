@@ -31,6 +31,9 @@ class Campaign implements GameState {
         pauseMenuWrapper.setMenu(pauseMenu);
         level = new TestLevel();
     }
+    void init() {
+        level.init();
+    }
     void pause() {
         loadPixels();
         pauseBufferBackground.loadPixels();

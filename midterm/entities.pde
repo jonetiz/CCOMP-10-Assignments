@@ -301,6 +301,10 @@ class Character extends Entity implements ICharacter {
     }
 }
 
+class Biped extends Character {
+    //Do stuff using the spritesheets here or sum'n idk
+}
+
 class Weapon extends Entity implements IWeapon {
     //X AND Y ARE RELATIVE TO PARENT CHARACTER
 

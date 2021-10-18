@@ -37,6 +37,7 @@ SoundEffect menuSelect2;
 SoundEffect menuSelect3;
 
 interface GameState {
+    void init();
     void pause();
     void update();
 }
@@ -74,6 +75,7 @@ void setup() {
     
     //Consciously setting currentCursor to a *reference* of menuCursor, as it will allow us to "hotswap" the currentCursor in runtime
     currentCursor = menuCursor;
+    gameState.init();
 }
 
 void draw() {

@@ -138,7 +138,7 @@ class PauseMenu extends Menu {
     );
     MenuButton exitMainMenuButton = new MenuButton(width/2, height/2 + 125, 250, 50, "Main Menu", true,
         new ButtonCallback() {
-            void call() { gameState = mainMenu; }
+            void call() { gameState = mainMenu; mainMenu.init(); }
         }
     );
     MenuButton exitWindowsButton = new MenuButton(width/2, height/2 + 200, 250, 50, "Windows", true,

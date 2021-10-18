@@ -74,7 +74,7 @@ class BackgroundDetail {
                 imageMode(CENTER);
                 tint(255, 128);
                 image(img, x, y);
-                //tint(255, 255);
+                tint(255, 255);
                 if (x < 0 - size) {
                     x = width + size;
                     y = int(random(height));

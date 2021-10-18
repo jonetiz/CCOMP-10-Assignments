@@ -56,7 +56,9 @@ class MainMenu implements GameState {
         mainMenuMenu.menuWrapper = mainMenuWrapper;
         campaignMenu.menuWrapper = mainMenuWrapper;
         settingsMenu.menuWrapper = mainMenuWrapper;
-
+    }
+    void pause() {}
+    void init() {
         loadedCharacters.add(shipUnsc1);
         loadedCharacters.add(shipUnsc2);
         loadedCharacters.add(shipUnsc3);
@@ -72,7 +74,6 @@ class MainMenu implements GameState {
         loadedCharacters.add(covieShip7);
         loadedCharacters.add(covieShip8);
     }
-    void pause() {}
     void update() {
         menuMusic.changeVolume((float)userConfig.musicVolume.value);
         menuMusic.update();
