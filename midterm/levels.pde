@@ -42,7 +42,6 @@ class Level {
     
     void init () {
         //Create whatever objects necessary and add them to levelObjects.
-        levelObjects.add(new CovenantCrate(1000, 720, 0, 1.0));
         //Generate the levelFloor.
         floor = new LevelFloor(length, 720, levelObjects);
     }
@@ -75,8 +74,10 @@ class Level {
                 }
 
                 //limit projectiles in memory to 100 for optimization
-                if (c.weaponPrimary.ownedProjectiles.size() > 100) {
-                    c.weaponPrimary.ownedProjectiles.remove(0);
+                if (c.weaponPrimary != null) {
+                    if (c.weaponPrimary.ownedProjectiles.size() > 100) {
+                        c.weaponPrimary.ownedProjectiles.remove(0);
+                    }
                 }
                 if (c.weaponSecondary != null) {
                     if (c.weaponSecondary.ownedProjectiles.size() > 100) {
@@ -153,7 +154,6 @@ class CovenantCrate extends WorldObject {
         h = sprite.height;
     }
     void update() {
-        println("UPDATE");
         imageMode(CORNER);
         image(sprite, pos.x, pos.y - h);
     }
@@ -164,6 +164,8 @@ class TestLevel extends Level {
         levelName = "Test Level";
         levelObjects.add(new TestBox());
         bg = new Background(color(255,214,165), "cloud", 0.1, 30, 32, 96);
+        loadedCharacters.add(new Player(500, 540));
+        levelObjects.add(new CovenantCrate(1000, 720, 0, 1.0));
     }
     void drawLevel () {
     }

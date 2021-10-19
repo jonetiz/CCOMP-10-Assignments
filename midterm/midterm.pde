@@ -36,6 +36,10 @@ SoundEffect menuSelect1;
 SoundEffect menuSelect2;
 SoundEffect menuSelect3;
 
+//Used for bipedal entities.
+PImage spritesheetCovenant;
+PImage spritesheetUNSC;
+
 interface GameState {
     void init();
     void pause();
@@ -48,6 +52,10 @@ void setup() {
     //size(1280,720);
     //Set window title
     surface.setTitle("Halo: Siege of Arcadia");
+    
+    //Load spritesheets
+    spritesheetCovenant = loadImage("data\\img\\char\\spritesheet-cov.png");
+    spritesheetUNSC = loadImage("data\\img\\char\\spritesheet-unsc.png");
     
     //Initialize configs and gamestates
     userConfig = new Config();
@@ -72,7 +80,7 @@ void setup() {
     menuCursorPressed = loadImage("data\\img\\menu-cursor-pressed.png");
     menuCursor.resize(24,24);
     menuCursorPressed.resize(24,24);
-    
+
     //Consciously setting currentCursor to a *reference* of menuCursor, as it will allow us to "hotswap" the currentCursor in runtime
     currentCursor = menuCursor;
     gameState.init();

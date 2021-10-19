@@ -55,6 +55,8 @@ class Entity implements IEntity {
 
     //Basic positioning
     PVector pos = new PVector();
+    //Relative level positioning
+    PVector levelPos = new PVector();
     int w;
     int h;
     float rotation;
@@ -299,10 +301,6 @@ class Character extends Entity implements ICharacter {
             death();
         }
     }
-}
-
-class Biped extends Character {
-    //Do stuff using the spritesheets here or sum'n idk
 }
 
 class Weapon extends Entity implements IWeapon {
