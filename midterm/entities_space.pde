@@ -21,6 +21,7 @@ class ShipHalcyon extends Character {
     ShipHalcyon (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 179;
         h = 61;
         scaleX = scaX;
@@ -47,7 +48,7 @@ class ShipHalcyon extends Character {
         weaponSecondary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -72,11 +73,11 @@ class ShipHalcyon extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
-            weaponSecondary.pos = new PVector(pos.x, pos.y);
+            weaponSecondary.levelPos = new PVector(levelPos.x, levelPos.y);
             weaponSecondary.rotation = rotation;
             weaponSecondary.scaleX = scaleX;
             weaponSecondary.scaleY = scaleY;
@@ -87,14 +88,14 @@ class ShipHalcyon extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 }
 
@@ -106,7 +107,7 @@ class SpaceMacGun extends Weapon {
         layer = l;
     }
     void update() {
-        projectileOrigin = pos;
+        projectileOrigin = levelPos;
         ownedProjectiles.forEach((p) -> {
             if (p.exists) p.update();
         });
@@ -123,7 +124,7 @@ class SpaceMacGun extends Weapon {
 
 class MacRound extends Projectile {
     MacRound(PVector position, float rot, float sX, float sY, int l, Character p) {
-        pos = position;
+        levelPos = position;
         origin.set(position.x, position.y);
         rotation = rot;
         scaleX = sX;
@@ -145,7 +146,7 @@ class MacRound extends Projectile {
             "data\\img\\proj\\space\\unsc-explosion-3.png"
         };
 
-        loadedPFX.add(new ParticleEffect(pos.x, pos.y, 90, random(2), new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\unsc-explosion-4.png", "data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x, levelPos.y, 90, random(2), new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\unsc-explosion-4.png", "data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 
     void expire() {
@@ -161,7 +162,7 @@ class SpaceMachineGun extends Weapon {
         layer = l;
     }
     void update() {
-        projectileOrigin = pos;
+        projectileOrigin = levelPos;
         ownedProjectiles.forEach((p) -> {
             if (p.exists) p.update();
         });
@@ -178,7 +179,7 @@ class SpaceMachineGun extends Weapon {
 
 class MachineGunRound extends Projectile {
     MachineGunRound(PVector position, float rot, float sX, float sY, int l, Character p) {
-        pos = position;
+        levelPos = position;
         origin.set(position.x, position.y);
         rotation = rot;
         scaleX = sX;
@@ -200,7 +201,7 @@ class MachineGunRound extends Projectile {
             "data\\img\\proj\\space\\unsc-explosion-3.png"
         };
 
-        loadedPFX.add(new ParticleEffect(pos.x, pos.y, 30, 0.5, new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\unsc-explosion-4.png", "data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x, levelPos.y, 30, 0.5, new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\unsc-explosion-4.png", "data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 
     void expire() {
@@ -212,6 +213,7 @@ class CovenantSupercarrier extends Character {
     CovenantSupercarrier (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 359;
         h = 58;
         scaleX = scaX;
@@ -238,7 +240,7 @@ class CovenantSupercarrier extends Character {
         weaponSecondary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -263,11 +265,11 @@ class CovenantSupercarrier extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
-            weaponSecondary.pos = new PVector(pos.x, pos.y);
+            weaponSecondary.levelPos = new PVector(levelPos.x, levelPos.y);
             weaponSecondary.rotation = rotation;
             weaponSecondary.scaleX = scaleX;
             weaponSecondary.scaleY = scaleY;
@@ -278,14 +280,14 @@ class CovenantSupercarrier extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 4, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
     }
 }
 
@@ -297,7 +299,7 @@ class CovenantCannonLarge extends Weapon {
         layer = l;
     }
     void update() {
-        projectileOrigin = pos;
+        projectileOrigin = levelPos;
         ownedProjectiles.forEach((p) -> {
             if (p.exists) p.update();
         });
@@ -314,7 +316,7 @@ class CovenantCannonLarge extends Weapon {
 
 class CovenantLargePlasmaBall extends Projectile {
     CovenantLargePlasmaBall(PVector position, float rot, float sX, float sY, int l, Character p) {
-        pos = position;
+        levelPos = position;
         origin.set(position.x, position.y);
         rotation = rot;
         scaleX = sX;
@@ -336,7 +338,7 @@ class CovenantLargePlasmaBall extends Projectile {
             "data\\img\\proj\\space\\cov-explosion-3.png"
         };
 
-        loadedPFX.add(new ParticleEffect(pos.x, pos.y, 90, random(2), new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\cov-explosion-4.png", "data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x, levelPos.y, 90, random(2), new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\cov-explosion-4.png", "data\\img\\proj\\space\\cov-explosion-5.png"}));
     }
 
     void expire() {
@@ -348,6 +350,7 @@ class CovenantCCS extends Character {
     CovenantCCS (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 260;
         h = 38;
         scaleX = scaX;
@@ -374,7 +377,7 @@ class CovenantCCS extends Character {
         weaponSecondary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -399,11 +402,11 @@ class CovenantCCS extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
-            weaponSecondary.pos = new PVector(pos.x,pos.y);
+            weaponSecondary.levelPos = new PVector(levelPos.x,levelPos.y);
             weaponSecondary.rotation = rotation;
             weaponSecondary.scaleX = scaleX;
             weaponSecondary.scaleY = scaleY;
@@ -414,14 +417,14 @@ class CovenantCCS extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 3, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
     }
 }
 
@@ -433,7 +436,7 @@ class CovenantShipRepeater extends Weapon {
         layer = l;
     }
     void update() {
-        projectileOrigin = pos;
+        projectileOrigin = levelPos;
         ownedProjectiles.forEach((p) -> {
             if (p.exists) p.update();
         });
@@ -450,7 +453,7 @@ class CovenantShipRepeater extends Weapon {
 
 class CovenantRepeaterShell extends Projectile {
     CovenantRepeaterShell(PVector position, float rot, float sX, float sY, int l, Character p) {
-        pos = position;
+        levelPos = position;
         origin.set(position.x, position.y);
         rotation = rot;
         scaleX = sX;
@@ -472,7 +475,7 @@ class CovenantRepeaterShell extends Projectile {
             "data\\img\\proj\\space\\cov-explosion-3.png"
         };
 
-        loadedPFX.add(new ParticleEffect(pos.x, pos.y, 30, 0.5, new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\cov-explosion-4.png", "data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x, levelPos.y, 30, 0.5, new String[]{particleArray[int(random(particleArray.length))], "data\\img\\proj\\space\\cov-explosion-4.png", "data\\img\\proj\\space\\cov-explosion-5.png"}));
     }
 
     void expire() {
@@ -484,6 +487,7 @@ class ShipCruiserUNSC extends Character {
     ShipCruiserUNSC (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 125;
         h = 34;
         scaleX = scaX;
@@ -509,7 +513,7 @@ class ShipCruiserUNSC extends Character {
         weaponPrimary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -534,11 +538,11 @@ class ShipCruiserUNSC extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
-            weaponSecondary.pos = new PVector(pos.x, pos.y);
+            weaponSecondary.levelPos = new PVector(levelPos.x, levelPos.y);
             weaponSecondary.rotation = rotation;
             weaponSecondary.scaleX = scaleX;
             weaponSecondary.scaleY = scaleY;
@@ -549,14 +553,14 @@ class ShipCruiserUNSC extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 2, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 }
 
@@ -564,6 +568,7 @@ class ShipFrigateUNSC extends Character {
     ShipFrigateUNSC (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 66;
         h = 18;
         scaleX = scaX;
@@ -590,7 +595,7 @@ class ShipFrigateUNSC extends Character {
         weaponSecondary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -615,11 +620,11 @@ class ShipFrigateUNSC extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
-            weaponSecondary.pos = new PVector(pos.x, pos.y);
+            weaponSecondary.levelPos = new PVector(levelPos.x, levelPos.y);
             weaponSecondary.rotation = rotation;
             weaponSecondary.scaleX = scaleX;
             weaponSecondary.scaleY = scaleY;
@@ -630,14 +635,14 @@ class ShipFrigateUNSC extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 }
 
@@ -645,6 +650,7 @@ class ShipDestroyerUNSC extends Character {
     ShipDestroyerUNSC (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 67;
         h = 19;
         scaleX = scaX;
@@ -671,7 +677,7 @@ class ShipDestroyerUNSC extends Character {
         weaponSecondary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -696,11 +702,11 @@ class ShipDestroyerUNSC extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
-            weaponSecondary.pos = new PVector(pos.x, pos.y);
+            weaponSecondary.levelPos = new PVector(levelPos.x, levelPos.y);
             weaponSecondary.rotation = rotation;
             weaponSecondary.scaleX = scaleX;
             weaponSecondary.scaleY = scaleY;
@@ -711,14 +717,14 @@ class ShipDestroyerUNSC extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\unsc-explosion-1.png", "data\\img\\proj\\space\\unsc-explosion-2.png", "data\\img\\proj\\space\\unsc-explosion-3.png", "data\\img\\proj\\space\\unsc-explosion-4.png","data\\img\\proj\\space\\unsc-explosion-5.png"}));
     }
 }
 
@@ -726,6 +732,7 @@ class CorvetteCovenant extends Character {
     CorvetteCovenant (float xpos, float ypos, float scaX, float scaY, int r, int l) {
         super();
         pos.set(xpos, ypos);
+        levelPos.set(xpos, ypos);
         w = 133;
         h = 24;
         scaleX = scaX;
@@ -750,7 +757,7 @@ class CorvetteCovenant extends Character {
         weaponPrimary.parent = this;
         if (alive) {
             pushMatrix();
-            translate(pos.x, pos.y);
+            translate(levelPos.x, levelPos.y);
             rotate(rotation);
             imageMode(CENTER);
             rectMode(CENTER);
@@ -775,7 +782,7 @@ class CorvetteCovenant extends Character {
             }
             popMatrix();
 
-            weaponPrimary.pos = new PVector(weaponOffset.x*cos(rotation) * scaleX + pos.x, weaponOffset.x*sin(rotation)* scaleY + pos.y);
+            weaponPrimary.levelPos = new PVector(weaponOffset.x*cos(rotation) * scaleX + levelPos.x, weaponOffset.x*sin(rotation)* scaleY + levelPos.y);
             weaponPrimary.rotation = rotation;
             weaponPrimary.scaleX = scaleX;
             weaponPrimary.scaleY = scaleY;
@@ -785,13 +792,13 @@ class CorvetteCovenant extends Character {
         }
     }
     void death() {
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
-        loadedPFX.add(new ParticleEffect(pos.x + random(-w/2, w/2), pos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
+        loadedPFX.add(new ParticleEffect(levelPos.x + random(-w/2, w/2), levelPos.y + random(-h/2, h/2), 90, 1, new String[]{"data\\img\\proj\\space\\cov-explosion-1.png", "data\\img\\proj\\space\\cov-explosion-2.png", "data\\img\\proj\\space\\cov-explosion-3.png", "data\\img\\proj\\space\\cov-explosion-4.png","data\\img\\proj\\space\\cov-explosion-5.png"}));
     }
 }

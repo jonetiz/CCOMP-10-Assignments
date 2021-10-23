@@ -57,8 +57,9 @@ class MainMenu implements GameState {
         campaignMenu.menuWrapper = mainMenuWrapper;
         settingsMenu.menuWrapper = mainMenuWrapper;
     }
-    void pause() {}
     void init() {
+        loadedCharacters.clear();
+        loadedPFX.clear();
         loadedCharacters.add(shipUnsc1);
         loadedCharacters.add(shipUnsc2);
         loadedCharacters.add(shipUnsc3);
@@ -99,12 +100,12 @@ class MainMenu implements GameState {
                     //UNSC Ships
                     case 1:
                         c.rotation = radians(180);
-                        c.pos.set(width + 1000, random(height));
+                        c.levelPos.set(width + 1000, random(height));
                     break;
                     //Covenant ships
                     case 2:
                         c.rotation = 0;
-                        c.pos.set(-1000, random(height));
+                        c.levelPos.set(-1000, random(height));
                     break;
                 }
                 c.curHP = c.maxHP;
@@ -113,7 +114,7 @@ class MainMenu implements GameState {
             }
             if (c.braindead) {
                 c.movementStatic(c.rotation, c.movementSpeed);
-                if (c.pos.x > random(250,1250) && c.pos.x < width-random(250,1250)) {
+                if (c.levelPos.x > random(250,1250) && c.levelPos.x < width-random(250,1250)) {
                     c.braindead = false;
                 }
             }

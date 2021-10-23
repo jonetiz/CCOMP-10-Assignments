@@ -59,10 +59,9 @@ class Music extends Sound {
     }
 }
 
-class Ambience extends Sound {
+class Ambience extends Music {
     Ambience (String p) {
-        path = sketchPath(p);
-        file = new SoundFile(midterm.this, path);
+        super(p);
         volumeParam = userConfig.ambientVolume;
     }
 }
@@ -125,5 +124,10 @@ class MusicPlaylist {
 
     void forceNextSong(Music song) {
         nextSong = song;
+    }
+    
+    void stop() {
+        songs.clear();
+        currentSong.stop();
     }
 }

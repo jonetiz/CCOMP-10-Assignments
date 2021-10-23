@@ -70,16 +70,8 @@ class MenuMain extends Menu {
             void call() { menuWrapper.setMenu(mainMenu.campaignMenu); }
         }
     );
-    MenuButton endureButton = new MenuButton(width/2, height/2 + 75, 300, 50, "Endure", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
-    MenuButton multiplayerButton = new MenuButton(width/2, height/2 + 150, 300, 50, "Multiplayer", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
+    MenuButton endureButton = new MenuButton(width/2, height/2 + 75, 300, 50, "Endure", false);
+    MenuButton multiplayerButton = new MenuButton(width/2, height/2 + 150, 300, 50, "Multiplayer", false);
     MenuButton settingsButton = new MenuButton(width/2, height/2 + 225, 300, 50, "Settings", false,
         new ButtonCallback() {
             void call() { menuWrapper.setMenu(mainMenu.settingsMenu); }
@@ -128,7 +120,7 @@ class PauseMenu extends Menu {
     MenuButton restartButton = new MenuButton(width/2, height/2 - 25, 250, 50, "Restart", true,
         new ButtonCallback() {
             //TODO: Add restart case when restart mission becomes a thing
-            void call() {  }
+            void call() { campaign.level = new TestLevel(); campaign.init(); campaign.paused = false; }
         }
     );
     MenuButton settingsButton = new MenuButton(width/2, height/2 + 50, 250, 50, "Settings", true,
@@ -138,7 +130,7 @@ class PauseMenu extends Menu {
     );
     MenuButton exitMainMenuButton = new MenuButton(width/2, height/2 + 125, 250, 50, "Main Menu", true,
         new ButtonCallback() {
-            void call() { gameState = mainMenu; mainMenu.init(); }
+            void call() { gameState = mainMenu; loadedCharacters = new ArrayList<Character>(); mainMenu.init(); }
         }
     );
     MenuButton exitWindowsButton = new MenuButton(width/2, height/2 + 200, 250, 50, "Windows", true,
@@ -151,6 +143,10 @@ class PauseMenu extends Menu {
         menuWrapper = mw;
     }
     void update() {
+        if (escape) {
+            escape = false;
+            campaign.paused = false;
+        }
         rectMode(CENTER);
         stroke(#2399ff);
         fill(#051f43, 80);
@@ -213,22 +209,15 @@ class MenuLarge extends Menu {
 class MenuCampaign extends Menu {
     MenuWrapper menuWrapper;
     Menu exitMenu;
+    LevelSelectMenu levelMenu;
 
-    MenuButton continueButton = new MenuButton(width/2, height/2, 300, 50, "Continue", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
+    MenuButton continueButton = new MenuButton(width/2, height/2, 300, 50, "Continue", false);
     MenuButton newGameButton = new MenuButton(width/2, height/2 + 75, 300, 50, "New Game", false,
         new ButtonCallback() {
-            void call() { println("asdf"); }
+            void call() { menuWrapper.setMenu(levelMenu); }
         }
     );
-    MenuButton loadGameButton = new MenuButton(width/2, height/2 + 150, 300, 50, "Load Game", false,
-        new ButtonCallback() {
-            void call() { println("asdf"); }
-        }
-    );
+    MenuButton loadGameButton = new MenuButton(width/2, height/2 + 150, 300, 50, "Load Game", false);
     MenuButton campaignBackButton = new MenuButton(width/2, height/2 + 225, 300, 50, "Back", false,
         new ButtonCallback() {
             void call() { menuWrapper.setMenu(exitMenu); }
@@ -241,9 +230,10 @@ class MenuCampaign extends Menu {
         menuLogo.resize(512,128);
         menuWrapper = mw;
         exitMenu = exit;
+        levelMenu = new LevelSelectMenu(mw, this);
     }
     void update() {
-        if (key == ESC) {
+        if (escape) {
             key = 0;
             menuWrapper.setMenu(exitMenu);
         }
@@ -272,8 +262,23 @@ class SettingsMenu extends MenuLarge {
     MenuSlider musicSlider = new MenuSlider(100, 300, 400, userConfig.musicVolume);
     MenuSlider ambientSlider = new MenuSlider(100, 450, 400, userConfig.ambientVolume);
     MenuSlider sfxSlider = new MenuSlider(100, 600, 400, userConfig.sfxVolume);
+    MenuButton jumpKeybind = new MenuButton(150, 750, 100, 50, userConfig.keybind_jump.value.toString(), true, new ButtonCallback() {
+        void call() { jumpKeybind.text = "..."; }
+    });
+    MenuButton leftKeybind = new MenuButton(325, 750, 100, 50, userConfig.keybind_left.value.toString(), true, new ButtonCallback() {
+        void call() { leftKeybind.text = "..."; }
+    });
+    MenuButton rightKeybind = new MenuButton(500, 750, 100, 50, userConfig.keybind_right.value.toString(), true, new ButtonCallback() {
+        void call() { rightKeybind.text = "..."; }
+    });
+    MenuButton reloadKeybind = new MenuButton(675, 750, 100, 50, userConfig.keybind_reload.value.toString(), true, new ButtonCallback() {
+        void call() { reloadKeybind.text = "..."; }
+    });
+    MenuButton swKeybind = new MenuButton(850, 750, 100, 50, userConfig.keybind_swWeapon.value.toString(), true, new ButtonCallback() {
+        void call() { swKeybind.text = "..."; }
+    });
     MenuButton settingsBackButton = new MenuButton(width-200, height-150, 100, 50, "Back", true, new ButtonCallback() {
-        void call() { menuWrapper.setMenu(exitMenu); }
+        void call() { userConfig.update(); menuWrapper.setMenu(exitMenu); }
     });
 
     SettingsMenu(MenuWrapper mw, Menu exit) {
@@ -282,8 +287,8 @@ class SettingsMenu extends MenuLarge {
         exitMenu = exit;
     }
     void specialCase() {
-        if (key == ESC) {
-            key = 0;
+        if (escape) {
+            escape = false;
             menuWrapper.setMenu(exitMenu);
         }
 
@@ -294,11 +299,79 @@ class SettingsMenu extends MenuLarge {
         text("MUSIC VOLUME", 100, 250);
         text("AMBIENCE VOLUME", 100, 400);
         text("SFX VOLUME", 100, 550);
+        text("JUMP", 100, 700);
+        text("LEFT", 285, 700);
+        text("RIGHT", 450, 700);
+        text("RELOAD", 600, 700);
+        text("SW. WEAP", 775, 700);
 
         musicSlider.update();
         ambientSlider.update();
         sfxSlider.update();
+        jumpKeybind.update();
+        leftKeybind.update();
+        rightKeybind.update();
+        reloadKeybind.update();
+        swKeybind.update();
+        //If there's no keybind set, set the next key pressed.
+        if (jumpKeybind.text == "...") {
+            if (keyPressed && key != ESC) {
+                jumpKeybind.text = str(key);
+                userConfig.keybind_jump.value = key;
+            }
+        }
+        if (leftKeybind.text == "...") {
+            if (keyPressed && key != ESC) {
+                leftKeybind.text = str(key);
+                userConfig.keybind_left.value = key;
+            }
+        }
+        if (rightKeybind.text == "...") {
+            if (keyPressed && key != ESC) {
+                rightKeybind.text = str(key);
+                userConfig.keybind_right.value = key;
+            }
+        }
+        if (reloadKeybind.text == "...") {
+            if (keyPressed && key != ESC) {
+                reloadKeybind.text = str(key);
+                userConfig.keybind_reload.value = key;
+            }
+        }
+        if (swKeybind.text == "...") {
+            if (keyPressed && key != ESC) {
+                swKeybind.text = str(key);
+                userConfig.keybind_swWeapon.value = key;
+            }
+        }
+
         settingsBackButton.update();
+    }
+}
+
+class LevelSelectMenu extends MenuLarge {
+    MenuWrapper menuWrapper;
+    Menu exitMenu;
+
+    MenuButton levelOneButton = new MenuButton(width/2, 250, width-500, 50, "That One Level", true, new ButtonCallback() {
+        void call() { mainMenu.menuMusic.stop(); gameState = campaign; campaign.init(); }
+    });
+    MenuButton backButton = new MenuButton(width-200, height-150, 100, 50, "Back", true, new ButtonCallback() {
+        void call() { menuWrapper.setMenu(exitMenu); }
+    });
+
+    LevelSelectMenu(MenuWrapper mw, Menu exit) {
+        super("Settings");
+        menuWrapper = mw;
+        exitMenu = exit;
+    }
+    void specialCase() {
+        if (escape) {
+            escape = false;
+            menuWrapper.setMenu(exitMenu);
+        }
+        levelOneButton.update();
+        backButton.update();
     }
 }
 
@@ -322,8 +395,7 @@ class MenuButton extends MenuElement {
     String text;
 
     ButtonCallback callback;
-
-
+    
     MenuButton(int xbase, int ybase, int wid, int hei, String t, boolean bg, ButtonCallback cb) {
         x = xbase;
         y = ybase;
@@ -334,42 +406,65 @@ class MenuButton extends MenuElement {
         callback = cb;
     }
 
+    //Disabled or no action buttons
+    MenuButton(int xbase, int ybase, int wid, int hei, String t, boolean bg) {
+        x = xbase;
+        y = ybase;
+        w = wid;
+        h = hei;
+        text = t;
+        background = bg;
+    }
+
     void update() {
-        mouseover = (x - w/2 <= mouseX && mouseX <= x + w/2 && y - h/2 <= mouseY && mouseY <= y + h/2);
-        if (background) {
-            strokeWeight(2);
-            if(mouseover) {
-                stroke(255);
+        if(callback != null) {
+            mouseover = (x - w/2 <= mouseX && mouseX <= x + w/2 && y - h/2 <= mouseY && mouseY <= y + h/2);
+            if (background) {
+                strokeWeight(2);
+                if(mouseover) {
+                    stroke(255);
+                } else {
+                    stroke(#1e608f, 200);
+                }
+                fill(#051f43, 200);
+                rectMode(CORNER);
+                rect(x-w/2, y-h/2, w, h, 5);
+            }
+            textAlign(CENTER);
+            textFont(menuFont1);
+            if (mouseover) {
+                if (mouseovercount == 0) menuHover.play();
+                mouseovercount++;
+                fill(255);
             } else {
-                stroke(#1e608f, 200);
+                mouseovercount = 0;
+                fill(#2399ff);
             }
-            fill(#051f43, 200);
-            rectMode(CORNER);
-            rect(x-w/2, y-h/2, w, h, 5);
-        }
-        textAlign(CENTER);
-        textFont(menuFont1);
-        if (mouseover) {
-            if (mouseovercount == 0) menuHover.play();
-            mouseovercount++;
-            fill(255);
-        } else {
-            mouseovercount = 0;
-            fill(#2399ff);
-        }
-        if (mouseover && mousePressed) {
-            if (mouseclickcount == 0) {
-                menuSelect3.play();
-                callback.call();
-                //Make sure it doesn't press any buttons that "appear" under
-                mousePressed = false;
+            if (mouseover && mousePressed) {
+                if (mouseclickcount == 0) {
+                    menuSelect3.play();
+                    callback.call();
+                    //Make sure it doesn't press any buttons that "appear" under
+                    mousePressed = false;
+                }
+                mouseclickcount++;
+            } else {
+                mouseclickcount = 0;
             }
-            mouseclickcount++;
+            textSize(32);
+            text(text.toUpperCase(), x, y + 10);
         } else {
-            mouseclickcount = 0;
+            if (background) {
+                fill(#051f43, 128);
+                rectMode(CORNER);
+                rect(x-w/2, y-h/2, w, h, 5);
+            }
+            textAlign(CENTER);
+            textFont(menuFont1);
+            textSize(32);
+            fill(#2399ff, 128);
+            text(text.toUpperCase(), x, y + 10);
         }
-        textSize(32);
-        text(text.toUpperCase(), x, y + 10);
     }
 }
 
@@ -423,5 +518,46 @@ class MenuSlider extends MenuElement {
         sliderPos = newValue;
         param.value = newValue;
         userConfig.update();
+    }
+}
+
+//Player Heads-up Display
+class HUD {
+    Character ply;
+    HUD (Character player) {
+        ply = player;
+    }
+    void update() {
+        strokeWeight(2);
+        stroke(255);
+        fill(#051f43, 200);
+        rectMode(CORNER);
+        rect(20, 20, 120, 50, 5);
+        fill(255);
+        textFont(standardFont);
+        textAlign(CENTER);
+        text(String.format("%03d", ply.weaponPrimary.ammoCurrent), 50, 55);
+        text("|", 80, 55);
+        text(String.format("%03d", ply.weaponPrimary.ammoTotal), 110, 55);
+
+        //Do stuff if character is out of ammo.
+        if (ply.weaponPrimary.ammoCurrent <= 0) {
+            if (ply.weaponPrimary.ammoTotal > 0) {
+                fill(#2399ff, 200);
+                text("Weapon Empty", width/2, 300);
+                text("Press \"" + userConfig.keybind_reload.value + "\" to reload." , width/2, 350);
+            } else if (ply.weaponPrimary.ammoTotal <= 0 && ply.weaponPrimary.ammoCurrent <= 0 && (ply.weaponSecondary.ammoTotal > 0 || ply.weaponSecondary.ammoCurrent > 0)) {
+                fill(#2399ff, 200);
+                text("No Ammo", width/2, 300);
+                text("Press \"" + userConfig.keybind_swWeapon.value + "\" to switch weapons." , width/2, 350);
+            }
+        }
+
+        //Death screen
+        if (ply.curHP <= 0) {
+            background(0);
+            text("GAME OVER", width/2, height/2);
+            currentCursor = new PImage();
+        }
     }
 }

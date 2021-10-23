@@ -26,6 +26,8 @@ class Level {
     //Array of all WorldObjects (crates and the like) in the level
     ArrayList<WorldObject> levelObjects = new ArrayList<WorldObject>();
 
+    Character playerCharacter;
+
     //Level name string for use in menus or something
     String levelName = "NO LEVEL NAME";
 
@@ -34,46 +36,50 @@ class Level {
 
     Background bg;
 
-    //Level floor generated in init method based on levelObjects array and a base value.
-    LevelFloor floor;
-
     //How "long" the level is in pixels.
     int length = 100000;
+
+    //Level floor generated in init method based on levelObjects array and a base value.
+    LevelFloor floor;
     
-    void init () {
-        //Create whatever objects necessary and add them to levelObjects.
-        //Generate the levelFloor.
-        floor = new LevelFloor(length, 720, levelObjects);
-    }
+    //MusicPlaylist levelAmbience = new MusicPlaylist();
+
+    void init () {}
+    
     void update() {
         //Load background
         if (bg != null) {
             bg.update();
         }
 
+        //Make the "camera" (level referenceX) "follow" the player.
+        referenceX = int(playerCharacter.levelPos.x) - 500;
+
         levelObjects.forEach((obj) -> {
-            //Check if the object is within 100 pixels of the sides of the screen and begins drawing/updating
+            //Check if the object is within 100 pixels of the sides of the screen and begin drawing/updating
             if (
-                (obj.levelPos.x + obj.w > -100 - referenceX && obj.levelPos.x < width + 100 - referenceX)
+                (obj.levelPos.x + obj.w > referenceX - 100 && obj.levelPos.x < width + referenceX + 100)
                 &&
-                (obj.levelPos.y + obj.h > -100 - referenceY && obj.levelPos.y < height + 100 - referenceY)
+                (obj.levelPos.y + obj.h > referenceY - 100 && obj.levelPos.y < height + referenceY + 100)
             ) {
-                obj.pos.set(obj.levelPos.x + referenceX, obj.levelPos.y + referenceY);
+                obj.pos.set(obj.levelPos.x - referenceX, obj.levelPos.y + referenceY);
                 obj.update();
             }
         });
 
         loadedCharacters.forEach((c) -> {
             //Check if the character is within 500 pixels of the sides of the screen and begins drawing/updating
-            if ((c.pos.x > -500 - referenceX || c.pos.x < width + 500 - referenceX) && (c.pos.y > -500 - referenceY || c.pos.y < height + 500 - referenceY)) {
+            if (
+                (c.levelPos.x + c.w > referenceX - 500 && c.levelPos.x < width + referenceX + 500)
+            ) {
                 c.update();
                 
                 //If the character's y position is less than the floor position.
-                if (int(c.pos.y) < this.floor.get(c.pos.x)) {
-
+                if (int(c.pos.y) < this.floor.get(c.levelPos.x)) {
+                    c.pos.y = this.floor.get(c.levelPos.x);
                 }
 
-                //limit projectiles in memory to 100 for optimization
+                //limit projectiles per character in memory to 100 for optimization
                 if (c.weaponPrimary != null) {
                     if (c.weaponPrimary.ownedProjectiles.size() > 100) {
                         c.weaponPrimary.ownedProjectiles.remove(0);
@@ -83,6 +89,33 @@ class Level {
                     if (c.weaponSecondary.ownedProjectiles.size() > 100) {
                         c.weaponSecondary.ownedProjectiles.remove(0);
                     }
+                }
+
+                float rectCenterX = c.pos.x + c.w/2;
+                float rectCenterY = c.pos.y - c.h/2;
+                float rectW = c.w;
+                float rectH = c.h;
+                float cx = mouseX;
+                float cy = mouseY;
+                float r = ((currentCursor.height + currentCursor.width) / 2) / 2;
+
+                float rx = rectCenterX - rectW/2;
+                float ry = rectCenterY - rectH/2;
+
+                if(
+                    (abs(cx-rectCenterX)<=rectW && abs(cy-rectCenterY)<=rectH/2 + r)
+                    ||
+                    (abs(cy-rectCenterY)<=rectH/2 && abs(cx-rectCenterX)<=rectW +r)
+                    ||
+                    (dist(rx,ry,cx,cy)<=r || dist(rx+rectW,ry,cx,cy)<=r || dist(rx,ry+rectH,cx,cy)<=r || dist(rx+rectW,ry+rectH,cx,cy)<=r)
+                ){
+                    if (c.side == 1) {
+                        crosshairColor = color(0,255,0);
+                    } else {
+                        crosshairColor = color(#ff8080);
+                    }
+                } else {
+                    crosshairColor = color(255,255,255);
                 }
             }
         });
@@ -106,6 +139,9 @@ class Level {
 //A floor object containing 
 class LevelFloor {
     int baseFloor;
+    
+    //Friction on the ground
+    float frictionCoefficient = 5.0;
 
     //This array contains the floor values at each x-relative. For example, floorArray[z] will return the y-value of the floor at x-relative coordinate z.
     int[] floorArray;
@@ -118,12 +154,11 @@ class LevelFloor {
         arr.forEach((obj) -> {
             //First we'll see if the object is even on the layer 0 (player layer), should be very quick and easy to filter.
             if (obj.layer == 0) {
-                for (int i = 0; i <= width; i++) {
-                    floorArray[int(obj.pos.x) + i] = int(obj.pos.y + obj.h);
+                for (int i = 0; i < obj.w; i++) {
+                    floorArray[int(obj.levelPos.x) + i] = int(obj.levelPos.y - obj.h);
                 }
             }
         });
-        //Might insert some loading done clause if this is really intensive, we'll see...
     }
     void update() {
         rectMode(CORNER);
@@ -154,23 +189,27 @@ class CovenantCrate extends WorldObject {
         h = sprite.height;
     }
     void update() {
+        pushMatrix();
+        translate(levelPos.x - campaign.level.referenceX, levelPos.y - campaign.level.referenceY);
         imageMode(CORNER);
-        image(sprite, pos.x, pos.y - h);
+        image(sprite, 0, 0 - h);
+        popMatrix();
     }
 }
 
 class TestLevel extends Level {
     TestLevel() {
-        levelName = "Test Level";
-        levelObjects.add(new TestBox());
+        levelName = "That One Level";
         bg = new Background(color(255,214,165), "cloud", 0.1, 30, 32, 96);
-        loadedCharacters.add(new Player(500, 540));
-        levelObjects.add(new CovenantCrate(1000, 720, 0, 1.0));
+    }
+    void init () {
+        playerCharacter = new Player(500,540);
+        loadedCharacters.add(playerCharacter);
+        loadedCharacters.add(new EvilPlayer(2000, 540));
+        levelObjects.add(new CovenantCrate(1500, 720, 0, 1.0));
+        
+        floor = new LevelFloor(length, 720, levelObjects);
     }
     void drawLevel () {
     }
-}
-
-class TestBox extends WorldObject {
-
 }

@@ -40,9 +40,18 @@ SoundEffect menuSelect3;
 PImage spritesheetCovenant;
 PImage spritesheetUNSC;
 
+//Key press things
+boolean escape = false;
+boolean jump = false;
+boolean moveLeft = false;
+boolean moveRight = false;
+boolean reload = false;
+boolean switchWeapon = false;
+
+color crosshairColor = color(255, 255, 255);
+
 interface GameState {
     void init();
-    void pause();
     void update();
 }
 
@@ -61,7 +70,7 @@ void setup() {
     userConfig = new Config();
     mainMenu = new MainMenu();
     campaign = new Campaign();
-    gameState = campaign;
+    gameState = mainMenu;
     
     //Initialize global resources
     menuFont1 = createFont("data\\fonts\\HandelGothicRegular.ttf", 48);
@@ -91,13 +100,52 @@ void draw() {
     gameState.update();
     noCursor();
     imageMode(CENTER);
-    image(currentCursor, mouseX+4, mouseY+8);
+    tint(crosshairColor);
+    image(currentCursor, mouseX, mouseY);
+    noTint();
 }
 
 void keyPressed() {
     //Override escape key to disable exiting game when pressed. Will be used for back in menus/exiting menus.
     if (key == ESC) {
         key = 0;
-        gameState.pause();
+        escape = true;
+    }
+    
+    if(key == userConfig.keybind_jump.value.toString().charAt(0)){
+        jump = true;
+    }
+    if(key == userConfig.keybind_left.value.toString().charAt(0)){
+        moveLeft = true;
+    }
+    if(key == userConfig.keybind_right.value.toString().charAt(0)){
+        moveRight = true;
+    }
+    if(key == userConfig.keybind_reload.value.toString().charAt(0)){
+        reload = true;
+    }
+    if(key == userConfig.keybind_swWeapon.value.toString().charAt(0)){
+        switchWeapon = true;
+    }
+}
+
+void keyReleased(){
+    if (key == ESC) {
+        escape = false;
+    }
+    if(key == userConfig.keybind_jump.value.toString().charAt(0)){
+        jump = false;
+    }
+    if(key == userConfig.keybind_left.value.toString().charAt(0)){
+        moveLeft = false;
+    }
+    if(key == userConfig.keybind_right.value.toString().charAt(0)){
+        moveRight = false;
+    }
+    if(key == userConfig.keybind_reload.value.toString().charAt(0)){
+        reload = false;
+    }
+    if(key == userConfig.keybind_swWeapon.value.toString().charAt(0)){
+        switchWeapon = false;
     }
 }

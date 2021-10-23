@@ -27,12 +27,18 @@ class Campaign implements GameState {
     PImage pauseBufferBackground = createImage(width, height, ARGB);
     Level level;
 
+    HUD hud;
+
     Campaign () {
         pauseMenuWrapper.setMenu(pauseMenu);
         level = new TestLevel();
     }
     void init() {
+        loadedCharacters.clear();
+        loadedPFX.clear();
         level.init();
+        //Generate HUD for use in the campaign.
+        hud = new HUD(level.playerCharacter);
     }
     void pause() {
         loadPixels();
@@ -40,12 +46,18 @@ class Campaign implements GameState {
         arrayCopy(pixels, pauseBufferBackground.pixels);
         pauseBufferBackground.updatePixels();
 
+        escape = false;
         paused = !paused;
     }
     void update() {
         if (!paused) {
             level.update();
+            hud.update();
+            if (escape) {
+                pause();
+            }
         } else {
+            crosshairColor = color(255,255,255);
             background(pauseBufferBackground);
             pauseMenuWrapper.update();
         }
