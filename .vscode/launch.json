@@ -1,13 +1,22 @@
 {
-    "version": "2.0.0",
-    "configurations": [
-        {
-          "type": "node",
-          "request": "launch",
-          "name": "launch program",
-          "skipFiles": [ "<node_internals>/**"],
-          "preLaunchTask": "compile and run pde",
-          "program": "${workspaceFolder}/test.js"
-        }
-    ]
-  }
+  "version": "2.0.0",
+  "configurations": [
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "launch program",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "preLaunchTask": "compile and run pde",
+      "program": "${workspaceFolder}/test.js"
+    }
+  ]
+}
